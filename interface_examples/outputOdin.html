@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+    <title>Rubrowser</title>
+    <link media='all' rel='stylesheet'>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <style>html, body, .dependency_graph, .dependency_graph svg{
+    width: 100%;
+    height: 100%;
+    padding: 0px;
+    margin: 0px;
+    font-size: 13px;
+    overflow: hidden;
+}
+
+.link {
+    fill: none;
+    stroke: #666;
+    stroke-width: 1.5px;
+}
+
+circle {
+    fill: #fff;
+    stroke: #333;
+    stroke-width: 1.5px;
+}
+
+.circular {
+    stroke: #FF0000;
+}
+
+.fixed circle {
+    stroke-width: 3px;
+}
+
+text {
+    font: 10px sans-serif;
+    pointer-events: none;
+    text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+}
+
+text.type{
+    font: 7px sans-serif;
+}
+
+.downlighted {
+    opacity: 0.1;
+}
+
+.ignored{
+    display: none;
+}
+
+.running circle{
+    stroke: #18b738;
+    fill: #7dea93;
+}
+
+.highlighted,
+.highlighted_by_namespace,
+.highlighted_by_path,
+.highlighted_by_type{
+    fill: #008ef3;
+}
+
+.highlighted circle,
+.highlighted_by_namespace circle,
+.highlighted_by_path circle,
+.highlighted_by_type circle{
+    stroke: #008ef3;
+}
+
+.hide_namespace .namespace, .link.hide_relation{
+    display: none;
+}
+
+/* ============================ */
+/* Toolbox style */
+/* ============================ */
+
+.toolbox{
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    max-height: 100%;
+    width: 250px;
+    background: white;
+    overflow: auto;
+}
+
+ul, ol{
+    list-style-position: inside;
+    white-space: nowrap;
+    margin: 0px;
+    padding-left: 0px;
+    overflow: auto;
+}
+
+#information_panel{
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
+    height: 5rem;
+    background: rgba(255,255,255,0.8);
+    width: 100%;
+    margin-left: 250px;
+    padding-right: 250px;
+}
+
+#information_panel div{
+    margin: 1rem;
+    display: inline-block;
+}
+
+#information_panel:hover{
+    height: 33%;
+    overflow: auto;
+}
+</style>
+  </head>
+  <body>
+    <div class='dependency_graph'>
+      <svg></svg>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src='https://unpkg.com/lodash@4.17.4/lodash.min.js' type='text/javascript'></script>
+    <script src='https://unpkg.com/d3@4.13.0/build/d3.min.js' type='text/javascript'></script>
+    <script type='text/javascript'>
+     var data = {"definitions":[{"type":"Class","namespace":"ApplicationController","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/controllers/application_controller.rb","line":1,"lines":50},{"type":"Class","namespace":"ConfirmationsController","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/controllers/confirmations_controller.rb","line":1,"lines":8},{"type":"Class","namespace":"CoursesController","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/controllers/courses_controller.rb","line":1,"lines":10},{"type":"Class","namespace":"LessonsController","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/controllers/lessons_controller.rb","line":1,"lines":18},{"type":"Class","namespace":"LessonCompletionsController","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/controllers/lesson_completions_controller.rb","line":1,"lines":32},{"type":"Class","namespace":"OmniauthCallbacksController","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/controllers/omniauth_callbacks_controller.rb","line":1,"lines":63},{"type":"Class","namespace":"RegistrationsController","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/controllers/registrations_controller.rb","line":1,"lines":11},{"type":"Class","namespace":"SitemapController","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/controllers/sitemap_controller.rb","line":1,"lines":17},{"type":"Class","namespace":"StaticPagesController","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/controllers/static_pages_controller.rb","line":1,"lines":57},{"type":"Class","namespace":"UsersController","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/controllers/users_controller.rb","line":1,"lines":80},{"type":"Module","namespace":"Authentication::ActiveRecordHelpers::ClassMethods","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/domain/authentication/active_record_helpers.rb","line":7,"lines":6},{"type":"Module","namespace":"Authentication::ActiveRecordHelpers","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/domain/authentication/active_record_helpers.rb","line":2,"lines":13},{"type":"Module","namespace":"Authentication","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/domain/authentication/active_record_helpers.rb","line":1,"lines":16},{"type":"Module","namespace":"AdminFlashHelper","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/helpers/admin_flash_helper.rb","line":1,"lines":12},{"type":"Module","namespace":"ApplicationHelper","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/helpers/application_helper.rb","line":1,"lines":30},{"type":"Module","namespace":"CoursesHelper","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/helpers/courses_helper.rb","line":1,"lines":2},{"type":"Module","namespace":"LessonsHelper","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/helpers/lessons_helper.rb","line":1,"lines":10},{"type":"Module","namespace":"StaticPagesHelper","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/helpers/static_pages_helper.rb","line":1,"lines":2},{"type":"Module","namespace":"UsersHelper","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/helpers/users_helper.rb","line":1,"lines":26},{"type":"Class","namespace":"ContactMailer","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/mailers/contact_mailer.rb","line":1,"lines":17},{"type":"Class","namespace":"UserMailer","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/mailers/user_mailer.rb","line":1,"lines":28},{"type":"Class","namespace":"Ad","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/models/ad.rb","line":1,"lines":18},{"type":"Class","namespace":"AdminFlash","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/models/admin_flash.rb","line":1,"lines":15},{"type":"Class","namespace":"Course","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/models/course.rb","line":1,"lines":31},{"type":"Class","namespace":"Lesson","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/models/lesson.rb","line":1,"lines":69},{"type":"Class","namespace":"LessonCompletion","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/models/lesson_completion.rb","line":1,"lines":7},{"type":"Class","namespace":"Section","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/models/section.rb","line":1,"lines":7},{"type":"Class","namespace":"User","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/models/user.rb","line":1,"lines":110},{"type":"Class","namespace":"FindLesson","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/services/find_lesson.rb","line":1,"lines":42},{"type":"Class","namespace":"GravatarUrlBuilder","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/services/gravatar_url_builder.rb","line":1,"lines":26},{"type":"Class","namespace":"LinkOmniauth","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/services/link_omniauth.rb","line":1,"lines":34},{"type":"Class","namespace":"MarkdownConverter","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/services/markdown_converter.rb","line":1,"lines":26},{"type":"Class","namespace":"NewOrExistingOmniauthUser","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/services/new_or_existing_omniauth_user.rb","line":1,"lines":37},{"type":"Class","namespace":"SmartRedirect","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/services/smart_redirect.rb","line":1,"lines":58},{"type":"Class","namespace":"SocialMediaLink","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/services/social_media_link.rb","line":1,"lines":58},{"type":"Class","namespace":"Theodinproject::Application","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/application.rb","line":10,"lines":20},{"type":"Module","namespace":"Theodinproject","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/application.rb","line":9,"lines":22},{"type":"Class","namespace":"CreateSplashEmails","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20130516222435_create_splash_emails.rb","line":1,"lines":9},{"type":"Class","namespace":"AddIndexToSplashEmails","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20130517212611_add_index_to_splash_emails.rb","line":1,"lines":5},{"type":"Class","namespace":"CreateCalEvents","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20130525002607_create_cal_events.rb","line":1,"lines":19},{"type":"Class","namespace":"DeviseCreateUsers","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20130525011325_devise_create_users.rb","line":1,"lines":46},{"type":"Class","namespace":"ChangeColumnCalEventDescription","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20130528232335_change_column_cal_event_description.rb","line":1,"lines":9},{"type":"Class","namespace":"AddUsernameToUsers","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20130606015455_add_username_to_users.rb","line":1,"lines":7},{"type":"Class","namespace":"CreateContentBuckets","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20130606174802_create_content_buckets.rb","line":1,"lines":10},{"type":"Class","namespace":"CreateContentActivations","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20130606180047_create_content_activations.rb","line":1,"lines":13},{"type":"Class","namespace":"CreateUserPrefs","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20130606234405_create_user_prefs.rb","line":1,"lines":11},{"type":"Class","namespace":"AddProfileFieldsToUser","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20130711222431_add_profile_fields_to_user.rb","line":1,"lines":12},{"type":"Class","namespace":"CreateLessons","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20131017215959_create_lessons.rb","line":1,"lines":19},{"type":"Class","namespace":"CreateCourses","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20131017220111_create_courses.rb","line":1,"lines":11},{"type":"Class","namespace":"CreateSections","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20131017220155_create_sections.rb","line":1,"lines":14},{"type":"Class","namespace":"RemoveIndexFromLessonNames","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20131017222132_remove_index_from_lesson_names.rb","line":1,"lines":9},{"type":"Class","namespace":"RemoveIndexFromSectionNames","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20131017222347_remove_index_from_section_names.rb","line":1,"lines":9},{"type":"Class","namespace":"RemoveCourseIdFromLessons","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20131017224328_remove_course_id_from_lessons.rb","line":1,"lines":11},{"type":"Class","namespace":"AddTitleUrlToCoursesAndLessonsAndSections","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20131018003317_add_title_url_to_courses_and_lessons_and_sections.rb","line":1,"lines":10},{"type":"Class","namespace":"AddColumnPositionToCourses","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20131018013440_add_column_position_to_courses.rb","line":1,"lines":5},{"type":"Class","namespace":"AddLearnAndBuildColumnsToCourses","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20131018215244_add_learn_and_build_columns_to_courses.rb","line":1,"lines":6},{"type":"Class","namespace":"AddTeaserToCourses","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20131018220618_add_teaser_to_courses.rb","line":1,"lines":5},{"type":"Class","namespace":"AddColumnDescriptionToSections","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20131018235429_add_column_description_to_sections.rb","line":1,"lines":5},{"type":"Class","namespace":"AddColumnBriefDescriptionToCourses","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20131019000347_add_column_brief_description_to_courses.rb","line":1,"lines":5},{"type":"Class","namespace":"ChangeColumnCoursesBriefDescToText","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20131022014545_change_column_courses_brief_desc_to_text.rb","line":1,"lines":9},{"type":"Class","namespace":"AddIsActiveColumnToCourses","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20131023055114_add_is_active_column_to_courses.rb","line":1,"lines":5},{"type":"Class","namespace":"AddContentToLessons","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20131029041136_add_content_to_lessons.rb","line":1,"lines":5},{"type":"Class","namespace":"CreateAdminFlashes","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20131224032153_create_admin_flashes.rb","line":1,"lines":8},{"type":"Class","namespace":"AddColumnsToAdminFlash","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20131224032949_add_columns_to_admin_flash.rb","line":1,"lines":6},{"type":"Class","namespace":"CreateLessonCompletions","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20140210201517_create_lesson_completions.rb","line":1,"lines":11},{"type":"Class","namespace":"AddLegalAgreementToUserTable","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20140226191645_add_legal_agreement_to_user_table.rb","line":1,"lines":9},{"type":"Class","namespace":"DropSchedulerTables","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20140310055320_drop_scheduler_tables.rb","line":1,"lines":5},{"type":"Class","namespace":"AddProviderAndUidToUsers","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20140331183255_add_provider_and_uid_to_users.rb","line":1,"lines":6},{"type":"Class","namespace":"CreateAds","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20140425021519_create_ads.rb","line":1,"lines":14},{"type":"Class","namespace":"AddConfirmableToDevise","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20140505004746_add_confirmable_to_devise.rb","line":1,"lines":4},{"type":"Class","namespace":"AddConfirmableForReal","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20140505013220_add_confirmable_for_real.rb","line":1,"lines":21},{"type":"Class","namespace":"CreateFriendlyIdSlugs","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20161011120633_create_friendly_id_slugs.rb","line":1,"lines":15},{"type":"Class","namespace":"AddSlugToLessons","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20161011144709_add_slug_to_lessons.rb","line":1,"lines":6},{"type":"Class","namespace":"AddSlugToCourses","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20161011145454_add_slug_to_courses.rb","line":1,"lines":6},{"type":"Class","namespace":"AddIndexToLessons","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20161011162302_add_index_to_lessons.rb","line":1,"lines":8},{"type":"Class","namespace":"DropSplashEmailsTable","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20161017230606_drop_splash_emails_table.rb","line":1,"lines":5},{"type":"Class","namespace":"RemoveTitleAndTitleUrlIndexFromCourses","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20161017232509_remove_title_and_title_url_index_from_courses.rb","line":1,"lines":6},{"type":"Class","namespace":"DropUnusedTables","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20161019203200_drop_unused_tables.rb","line":1,"lines":7},{"type":"Class","namespace":"RemoveRegBeforeConfFromUsersTable","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20161022000746_remove_reg_before_conf_from_users_table.rb","line":1,"lines":5},{"type":"Module","namespace":"AuthHelpers","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/features/support/auth_helpers.rb","line":1,"lines":13},{"type":"Module","namespace":"ApiHelper","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/support/api_helper.rb","line":1,"lines":7},{"type":"Module","namespace":"Selectors","circular":false,"file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/support/selectors.rb","line":1,"lines":15}],"relations":[{"type":"Base","namespace":"ActionController::Base","resolved_namespace":"ActionController::Base","caller":"ApplicationController","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/controllers/application_controller.rb","circular":false,"line":1},{"type":"Base","namespace":"SmartRedirect","resolved_namespace":"SmartRedirect","caller":"ApplicationController","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/controllers/application_controller.rb","circular":false,"line":11},{"type":"Base","namespace":"ActionController::RoutingError","resolved_namespace":"ActionController::RoutingError","caller":"ApplicationController","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/controllers/application_controller.rb","circular":false,"line":23},{"type":"Base","namespace":"ActionController::RoutingError","resolved_namespace":"ActionController::RoutingError","caller":"ApplicationController","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/controllers/application_controller.rb","circular":false,"line":27},{"type":"Base","namespace":"Devise::ConfirmationsController","resolved_namespace":"Devise::ConfirmationsController","caller":"ConfirmationsController","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/controllers/confirmations_controller.rb","circular":false,"line":1},{"type":"Base","namespace":"ApplicationController","resolved_namespace":"ApplicationController","caller":"CoursesController","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/controllers/courses_controller.rb","circular":false,"line":1},{"type":"Base","namespace":"Course","resolved_namespace":"Course","caller":"CoursesController","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/controllers/courses_controller.rb","circular":false,"line":4},{"type":"Base","namespace":"Course","resolved_namespace":"Course","caller":"CoursesController","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/controllers/courses_controller.rb","circular":false,"line":8},{"type":"Base","namespace":"ApplicationController","resolved_namespace":"ApplicationController","caller":"LessonsController","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/controllers/lessons_controller.rb","circular":false,"line":1},{"type":"Base","namespace":"ActiveRecord::RecordNotFound","resolved_namespace":"ActiveRecord::RecordNotFound","caller":"LessonsController","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/controllers/lessons_controller.rb","circular":false,"line":2},{"type":"Base","namespace":"Lesson","resolved_namespace":"Lesson","caller":"LessonsController","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/controllers/lessons_controller.rb","circular":false,"line":5},{"type":"Base","namespace":"ENV","resolved_namespace":"ENV","caller":"LessonsController","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/controllers/lessons_controller.rb","circular":false,"line":16},{"type":"Base","namespace":"Ad","resolved_namespace":"Ad","caller":"LessonsController","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/controllers/lessons_controller.rb","circular":false,"line":16},{"type":"Base","namespace":"ApplicationController","resolved_namespace":"ApplicationController","caller":"LessonCompletionsController","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/controllers/lesson_completions_controller.rb","circular":false,"line":1},{"type":"Base","namespace":"LessonCompletion","resolved_namespace":"LessonCompletion","caller":"LessonCompletionsController","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/controllers/lesson_completions_controller.rb","circular":false,"line":18},{"type":"Base","namespace":"LessonCompletion","resolved_namespace":"LessonCompletion","caller":"LessonCompletionsController","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/controllers/lesson_completions_controller.rb","circular":false,"line":22},{"type":"Base","namespace":"Lesson","resolved_namespace":"Lesson","caller":"LessonCompletionsController","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/controllers/lesson_completions_controller.rb","circular":false,"line":26},{"type":"Base","namespace":"Devise::OmniauthCallbacksController","resolved_namespace":"Devise::OmniauthCallbacksController","caller":"OmniauthCallbacksController","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/controllers/omniauth_callbacks_controller.rb","circular":false,"line":1},{"type":"Base","namespace":"LinkOmniauth","resolved_namespace":"LinkOmniauth","caller":"OmniauthCallbacksController","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/controllers/omniauth_callbacks_controller.rb","circular":false,"line":23},{"type":"Base","namespace":"NewOrExistingOmniauthUser","resolved_namespace":"NewOrExistingOmniauthUser","caller":"OmniauthCallbacksController","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/controllers/omniauth_callbacks_controller.rb","circular":false,"line":25},{"type":"Base","namespace":"Devise::RegistrationsController","resolved_namespace":"Devise::RegistrationsController","caller":"RegistrationsController","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/controllers/registrations_controller.rb","circular":false,"line":1},{"type":"Base","namespace":"ApplicationController","resolved_namespace":"ApplicationController","caller":"SitemapController","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/controllers/sitemap_controller.rb","circular":false,"line":1},{"type":"Base","namespace":"Course","resolved_namespace":"Course","caller":"SitemapController","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/controllers/sitemap_controller.rb","circular":false,"line":5},{"type":"Base","namespace":"ApplicationController","resolved_namespace":"ApplicationController","caller":"StaticPagesController","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/controllers/static_pages_controller.rb","circular":false,"line":1},{"type":"Base","namespace":"ContactMailer","resolved_namespace":"ContactMailer","caller":"StaticPagesController","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/controllers/static_pages_controller.rb","circular":false,"line":28},{"type":"Base","namespace":"ApplicationController","resolved_namespace":"ApplicationController","caller":"UsersController","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/controllers/users_controller.rb","circular":false,"line":1},{"type":"Base","namespace":"User","resolved_namespace":"User","caller":"UsersController","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/controllers/users_controller.rb","circular":false,"line":29},{"type":"Base","namespace":"User","resolved_namespace":"User","caller":"UsersController","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/controllers/users_controller.rb","circular":false,"line":41},{"type":"Base","namespace":"User","resolved_namespace":"User","caller":"UsersController","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/controllers/users_controller.rb","circular":false,"line":75},{"type":"Base","namespace":"ActiveRecord::RecordNotFound","resolved_namespace":"ActiveRecord::RecordNotFound","caller":"UsersController","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/controllers/users_controller.rb","circular":false,"line":76},{"type":"Base","namespace":"ClassMethods","resolved_namespace":"Authentication::ActiveRecordHelpers::ClassMethods","caller":"Authentication::ActiveRecordHelpers","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/domain/authentication/active_record_helpers.rb","circular":false,"line":4},{"type":"Base","namespace":"Devise","resolved_namespace":"Devise","caller":"Authentication::ActiveRecordHelpers::ClassMethods","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/domain/authentication/active_record_helpers.rb","circular":false,"line":10},{"type":"Base","namespace":"MarkdownConverter","resolved_namespace":"MarkdownConverter","caller":"ApplicationHelper","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/helpers/application_helper.rb","circular":false,"line":14},{"type":"Base","namespace":"GravatarUrlBuilder","resolved_namespace":"GravatarUrlBuilder","caller":"UsersHelper","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/helpers/users_helper.rb","circular":false,"line":4},{"type":"Base","namespace":"SocialMediaLink","resolved_namespace":"SocialMediaLink","caller":"UsersHelper","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/helpers/users_helper.rb","circular":false,"line":8},{"type":"Base","namespace":"SocialMediaLink","resolved_namespace":"SocialMediaLink","caller":"UsersHelper","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/helpers/users_helper.rb","circular":false,"line":12},{"type":"Base","namespace":"SocialMediaLink","resolved_namespace":"SocialMediaLink","caller":"UsersHelper","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/helpers/users_helper.rb","circular":false,"line":16},{"type":"Base","namespace":"SocialMediaLink","resolved_namespace":"SocialMediaLink","caller":"UsersHelper","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/helpers/users_helper.rb","circular":false,"line":20},{"type":"Base","namespace":"ActionMailer::Base","resolved_namespace":"ActionMailer::Base","caller":"ContactMailer","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/mailers/contact_mailer.rb","circular":false,"line":1},{"type":"Base","namespace":"FEEDBACK_EMAIL","resolved_namespace":"FEEDBACK_EMAIL","caller":"ContactMailer","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/mailers/contact_mailer.rb","circular":false,"line":12},{"type":"Base","namespace":"ActionMailer::Base","resolved_namespace":"ActionMailer::Base","caller":"UserMailer","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/mailers/user_mailer.rb","circular":false,"line":1},{"type":"Base","namespace":"Lesson","resolved_namespace":"Lesson","caller":"UserMailer","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/mailers/user_mailer.rb","circular":false,"line":14},{"type":"Base","namespace":"File","resolved_namespace":"File","caller":"UserMailer","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/mailers/user_mailer.rb","circular":false,"line":16},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"UserMailer","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/mailers/user_mailer.rb","circular":false,"line":16},{"type":"Base","namespace":"Exception","resolved_namespace":"Exception","caller":"UserMailer","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/mailers/user_mailer.rb","circular":false,"line":17},{"type":"Base","namespace":"ActiveRecord::Base","resolved_namespace":"ActiveRecord::Base","caller":"Ad","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/models/ad.rb","circular":false,"line":1},{"type":"Base","namespace":"Ad","resolved_namespace":"Ad","caller":"Ad","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/models/ad.rb","circular":false,"line":10},{"type":"Base","namespace":"Ad","resolved_namespace":"Ad","caller":"Ad","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/models/ad.rb","circular":false,"line":15},{"type":"Base","namespace":"ActiveRecord::Base","resolved_namespace":"ActiveRecord::Base","caller":"AdminFlash","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/models/admin_flash.rb","circular":false,"line":1},{"type":"Base","namespace":"Time","resolved_namespace":"Time","caller":"AdminFlash","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/models/admin_flash.rb","circular":false,"line":7},{"type":"Base","namespace":"ActiveRecord::Base","resolved_namespace":"ActiveRecord::Base","caller":"Course","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/models/course.rb","circular":false,"line":1},{"type":"Base","namespace":"FriendlyId","resolved_namespace":"FriendlyId","caller":"Course","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/models/course.rb","circular":false,"line":2},{"type":"Base","namespace":"Array","resolved_namespace":"Array","caller":"Course","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/models/course.rb","circular":false,"line":4},{"type":"Base","namespace":"Array","resolved_namespace":"Array","caller":"Course","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/models/course.rb","circular":false,"line":5},{"type":"Base","namespace":"ActiveRecord::Base","resolved_namespace":"ActiveRecord::Base","caller":"Lesson","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/models/lesson.rb","circular":false,"line":1},{"type":"Base","namespace":"FriendlyId","resolved_namespace":"FriendlyId","caller":"Lesson","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/models/lesson.rb","circular":false,"line":2},{"type":"Base","namespace":"Octokit::Error","resolved_namespace":"Octokit::Error","caller":"Lesson","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/models/lesson.rb","circular":false,"line":28},{"type":"Base","namespace":"Base64","resolved_namespace":"Base64","caller":"Lesson","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/models/lesson.rb","circular":false,"line":35},{"type":"Base","namespace":"Octokit","resolved_namespace":"Octokit","caller":"Lesson","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/models/lesson.rb","circular":false,"line":39},{"type":"Base","namespace":"FindLesson","resolved_namespace":"FindLesson","caller":"Lesson","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/models/lesson.rb","circular":false,"line":56},{"type":"Base","namespace":"ActiveRecord::Base","resolved_namespace":"ActiveRecord::Base","caller":"LessonCompletion","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/models/lesson_completion.rb","circular":false,"line":1},{"type":"Base","namespace":"ActiveRecord::Base","resolved_namespace":"ActiveRecord::Base","caller":"Section","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/models/section.rb","circular":false,"line":1},{"type":"Base","namespace":"ActiveRecord::Base","resolved_namespace":"ActiveRecord::Base","caller":"User","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/models/user.rb","circular":false,"line":1},{"type":"Base","namespace":"User","resolved_namespace":"User","caller":"User","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/models/user.rb","circular":false,"line":22},{"type":"Base","namespace":"Lesson","resolved_namespace":"Lesson","caller":"User","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/models/user.rb","circular":false,"line":35},{"type":"Base","namespace":"Authentication::ActiveRecordHelpers","resolved_namespace":"Authentication::ActiveRecordHelpers","caller":"User","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/models/user.rb","circular":false,"line":47},{"type":"Base","namespace":"UserMailer","resolved_namespace":"UserMailer","caller":"User","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/models/user.rb","circular":false,"line":106},{"type":"Base","namespace":"Digest::MD5","resolved_namespace":"Digest::MD5","caller":"GravatarUrlBuilder","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/services/gravatar_url_builder.rb","circular":false,"line":16},{"type":"Base","namespace":"Redcarpet::Markdown","resolved_namespace":"Redcarpet::Markdown","caller":"MarkdownConverter","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/services/markdown_converter.rb","circular":false,"line":16},{"type":"Base","namespace":"Redcarpet::Render::HTML","resolved_namespace":"Redcarpet::Render::HTML","caller":"MarkdownConverter","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/services/markdown_converter.rb","circular":false,"line":20},{"type":"Base","namespace":"User","resolved_namespace":"User","caller":"NewOrExistingOmniauthUser","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/services/new_or_existing_omniauth_user.rb","circular":false,"line":35},{"type":"Base","namespace":"URI","resolved_namespace":"URI","caller":"SmartRedirect","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/services/smart_redirect.rb","circular":false,"line":23},{"type":"Base","namespace":"Forwardable","resolved_namespace":"Forwardable","caller":"SocialMediaLink","file":"C:/Users/jpms2/Desktop/tg/theodinproject/app/services/social_media_link.rb","circular":false,"line":2},{"type":"Base","namespace":"File","resolved_namespace":"File","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/application.rb","circular":false,"line":1},{"type":"Base","namespace":"Bundler","resolved_namespace":"Bundler","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/application.rb","circular":false,"line":7},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/application.rb","circular":false,"line":7},{"type":"Base","namespace":"Rails::Application","resolved_namespace":"Rails::Application","caller":"Theodinproject::Application","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/application.rb","circular":false,"line":10},{"type":"Base","namespace":"ENV","resolved_namespace":"ENV","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/boot.rb","circular":false,"line":1},{"type":"Base","namespace":"File","resolved_namespace":"File","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/boot.rb","circular":false,"line":1},{"type":"Base","namespace":"File","resolved_namespace":"File","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/environment.rb","circular":false,"line":2},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/environment.rb","circular":false,"line":5},{"type":"Base","namespace":"ActionMailer::Base","resolved_namespace":"ActionMailer::Base","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/environment.rb","circular":false,"line":8},{"type":"Base","namespace":"ENV","resolved_namespace":"ENV","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/environment.rb","circular":false,"line":12},{"type":"Base","namespace":"ENV","resolved_namespace":"ENV","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/environment.rb","circular":false,"line":13},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/environments/development.rb","circular":false,"line":1},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/environments/development.rb","circular":false,"line":8},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/environments/production.rb","circular":false,"line":1},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/environments/production.rb","circular":false,"line":6},{"type":"Base","namespace":"::Logger::Formatter","resolved_namespace":"Logger::Formatter","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/environments/production.rb","circular":false,"line":81},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/environments/test.rb","circular":false,"line":1},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/environments/test.rb","circular":false,"line":9},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/initializers/assets.rb","circular":false,"line":4},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/initializers/cookies_serializer.rb","circular":false,"line":3},{"type":"Base","namespace":"Devise","resolved_namespace":"Devise","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/initializers/devise.rb","circular":false,"line":3},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/initializers/devise.rb","circular":false,"line":83},{"type":"Base","namespace":"ENV","resolved_namespace":"ENV","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/initializers/devise.rb","circular":false,"line":218},{"type":"Base","namespace":"ENV","resolved_namespace":"ENV","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/initializers/devise.rb","circular":false,"line":218},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/initializers/filter_parameter_logging.rb","circular":false,"line":4},{"type":"Base","namespace":"FriendlyId","resolved_namespace":"FriendlyId","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/initializers/friendly_id.rb","circular":false,"line":12},{"type":"Base","namespace":"Octokit","resolved_namespace":"Octokit","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/initializers/octokit.rb","circular":false,"line":1},{"type":"Base","namespace":"ENV","resolved_namespace":"ENV","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/initializers/octokit.rb","circular":false,"line":2},{"type":"Base","namespace":"ENV","resolved_namespace":"ENV","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/initializers/octokit.rb","circular":false,"line":3},{"type":"Base","namespace":"ENV","resolved_namespace":"ENV","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/initializers/octokit.rb","circular":false,"line":4},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/initializers/pry.rb","circular":false,"line":1},{"type":"Base","namespace":"Pry","resolved_namespace":"Pry","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/initializers/pry.rb","circular":false,"line":6},{"type":"Base","namespace":"LoadError","resolved_namespace":"LoadError","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/initializers/pry.rb","circular":false,"line":7},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/initializers/secret_token.rb","circular":false,"line":1},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/initializers/secret_token.rb","circular":false,"line":14},{"type":"Base","namespace":"File","resolved_namespace":"File","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/initializers/secret_token.rb","circular":false,"line":15},{"type":"Base","namespace":"File","resolved_namespace":"File","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/initializers/secret_token.rb","circular":false,"line":17},{"type":"Base","namespace":"SecureRandom","resolved_namespace":"SecureRandom","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/initializers/secret_token.rb","circular":false,"line":20},{"type":"Base","namespace":"File","resolved_namespace":"File","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/initializers/secret_token.rb","circular":false,"line":21},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/initializers/secret_token.rb","circular":false,"line":26},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/initializers/session_store.rb","circular":false,"line":3},{"type":"Base","namespace":"SimpleForm","resolved_namespace":"SimpleForm","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/initializers/simple_form.rb","circular":false,"line":2},{"type":"Base","namespace":"SimpleForm","resolved_namespace":"SimpleForm","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/initializers/simple_form_bootstrap.rb","circular":false,"line":2},{"type":"Base","namespace":"Rack::Timeout","resolved_namespace":"Rack::Timeout","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/initializers/timeout.rb","circular":false,"line":3},{"type":"Base","namespace":"ActiveSupport","resolved_namespace":"ActiveSupport","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/initializers/wrap_parameters.rb","circular":false,"line":7},{"type":"Base","namespace":"ENV","resolved_namespace":"ENV","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/puma.rb","circular":false,"line":1},{"type":"Base","namespace":"ENV","resolved_namespace":"ENV","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/puma.rb","circular":false,"line":2},{"type":"Base","namespace":"DefaultRackup","resolved_namespace":"DefaultRackup","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/puma.rb","circular":false,"line":7},{"type":"Base","namespace":"ENV","resolved_namespace":"ENV","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/puma.rb","circular":false,"line":8},{"type":"Base","namespace":"ENV","resolved_namespace":"ENV","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/puma.rb","circular":false,"line":9},{"type":"Base","namespace":"ActiveRecord::Base","resolved_namespace":"ActiveRecord::Base","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/puma.rb","circular":false,"line":14},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/config/routes.rb","circular":false,"line":1},{"type":"Base","namespace":"ActiveRecord::Migration","resolved_namespace":"ActiveRecord::Migration","caller":"CreateSplashEmails","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20130516222435_create_splash_emails.rb","circular":false,"line":1},{"type":"Base","namespace":"ActiveRecord::Migration","resolved_namespace":"ActiveRecord::Migration","caller":"AddIndexToSplashEmails","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20130517212611_add_index_to_splash_emails.rb","circular":false,"line":1},{"type":"Base","namespace":"ActiveRecord::Migration","resolved_namespace":"ActiveRecord::Migration","caller":"CreateCalEvents","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20130525002607_create_cal_events.rb","circular":false,"line":1},{"type":"Base","namespace":"ActiveRecord::Migration","resolved_namespace":"ActiveRecord::Migration","caller":"DeviseCreateUsers","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20130525011325_devise_create_users.rb","circular":false,"line":1},{"type":"Base","namespace":"ActiveRecord::Migration","resolved_namespace":"ActiveRecord::Migration","caller":"ChangeColumnCalEventDescription","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20130528232335_change_column_cal_event_description.rb","circular":false,"line":1},{"type":"Base","namespace":"ActiveRecord::Migration","resolved_namespace":"ActiveRecord::Migration","caller":"AddUsernameToUsers","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20130606015455_add_username_to_users.rb","circular":false,"line":1},{"type":"Base","namespace":"ActiveRecord::Migration","resolved_namespace":"ActiveRecord::Migration","caller":"CreateContentBuckets","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20130606174802_create_content_buckets.rb","circular":false,"line":1},{"type":"Base","namespace":"ActiveRecord::Migration","resolved_namespace":"ActiveRecord::Migration","caller":"CreateContentActivations","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20130606180047_create_content_activations.rb","circular":false,"line":1},{"type":"Base","namespace":"ActiveRecord::Migration","resolved_namespace":"ActiveRecord::Migration","caller":"CreateUserPrefs","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20130606234405_create_user_prefs.rb","circular":false,"line":1},{"type":"Base","namespace":"ActiveRecord::Migration","resolved_namespace":"ActiveRecord::Migration","caller":"AddProfileFieldsToUser","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20130711222431_add_profile_fields_to_user.rb","circular":false,"line":1},{"type":"Base","namespace":"ActiveRecord::Migration","resolved_namespace":"ActiveRecord::Migration","caller":"CreateLessons","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20131017215959_create_lessons.rb","circular":false,"line":1},{"type":"Base","namespace":"ActiveRecord::Migration","resolved_namespace":"ActiveRecord::Migration","caller":"CreateCourses","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20131017220111_create_courses.rb","circular":false,"line":1},{"type":"Base","namespace":"ActiveRecord::Migration","resolved_namespace":"ActiveRecord::Migration","caller":"CreateSections","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20131017220155_create_sections.rb","circular":false,"line":1},{"type":"Base","namespace":"ActiveRecord::Migration","resolved_namespace":"ActiveRecord::Migration","caller":"RemoveIndexFromLessonNames","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20131017222132_remove_index_from_lesson_names.rb","circular":false,"line":1},{"type":"Base","namespace":"ActiveRecord::Migration","resolved_namespace":"ActiveRecord::Migration","caller":"RemoveIndexFromSectionNames","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20131017222347_remove_index_from_section_names.rb","circular":false,"line":1},{"type":"Base","namespace":"ActiveRecord::Migration","resolved_namespace":"ActiveRecord::Migration","caller":"RemoveCourseIdFromLessons","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20131017224328_remove_course_id_from_lessons.rb","circular":false,"line":1},{"type":"Base","namespace":"ActiveRecord::Migration","resolved_namespace":"ActiveRecord::Migration","caller":"AddTitleUrlToCoursesAndLessonsAndSections","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20131018003317_add_title_url_to_courses_and_lessons_and_sections.rb","circular":false,"line":1},{"type":"Base","namespace":"ActiveRecord::Migration","resolved_namespace":"ActiveRecord::Migration","caller":"AddColumnPositionToCourses","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20131018013440_add_column_position_to_courses.rb","circular":false,"line":1},{"type":"Base","namespace":"ActiveRecord::Migration","resolved_namespace":"ActiveRecord::Migration","caller":"AddLearnAndBuildColumnsToCourses","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20131018215244_add_learn_and_build_columns_to_courses.rb","circular":false,"line":1},{"type":"Base","namespace":"ActiveRecord::Migration","resolved_namespace":"ActiveRecord::Migration","caller":"AddTeaserToCourses","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20131018220618_add_teaser_to_courses.rb","circular":false,"line":1},{"type":"Base","namespace":"ActiveRecord::Migration","resolved_namespace":"ActiveRecord::Migration","caller":"AddColumnDescriptionToSections","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20131018235429_add_column_description_to_sections.rb","circular":false,"line":1},{"type":"Base","namespace":"ActiveRecord::Migration","resolved_namespace":"ActiveRecord::Migration","caller":"AddColumnBriefDescriptionToCourses","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20131019000347_add_column_brief_description_to_courses.rb","circular":false,"line":1},{"type":"Base","namespace":"ActiveRecord::Migration","resolved_namespace":"ActiveRecord::Migration","caller":"ChangeColumnCoursesBriefDescToText","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20131022014545_change_column_courses_brief_desc_to_text.rb","circular":false,"line":1},{"type":"Base","namespace":"ActiveRecord::Migration","resolved_namespace":"ActiveRecord::Migration","caller":"AddIsActiveColumnToCourses","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20131023055114_add_is_active_column_to_courses.rb","circular":false,"line":1},{"type":"Base","namespace":"ActiveRecord::Migration","resolved_namespace":"ActiveRecord::Migration","caller":"AddContentToLessons","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20131029041136_add_content_to_lessons.rb","circular":false,"line":1},{"type":"Base","namespace":"ActiveRecord::Migration","resolved_namespace":"ActiveRecord::Migration","caller":"CreateAdminFlashes","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20131224032153_create_admin_flashes.rb","circular":false,"line":1},{"type":"Base","namespace":"ActiveRecord::Migration","resolved_namespace":"ActiveRecord::Migration","caller":"AddColumnsToAdminFlash","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20131224032949_add_columns_to_admin_flash.rb","circular":false,"line":1},{"type":"Base","namespace":"ActiveRecord::Migration","resolved_namespace":"ActiveRecord::Migration","caller":"CreateLessonCompletions","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20140210201517_create_lesson_completions.rb","circular":false,"line":1},{"type":"Base","namespace":"ActiveRecord::Migration","resolved_namespace":"ActiveRecord::Migration","caller":"AddLegalAgreementToUserTable","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20140226191645_add_legal_agreement_to_user_table.rb","circular":false,"line":1},{"type":"Base","namespace":"ActiveRecord::Migration","resolved_namespace":"ActiveRecord::Migration","caller":"DropSchedulerTables","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20140310055320_drop_scheduler_tables.rb","circular":false,"line":1},{"type":"Base","namespace":"ActiveRecord::Migration","resolved_namespace":"ActiveRecord::Migration","caller":"AddProviderAndUidToUsers","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20140331183255_add_provider_and_uid_to_users.rb","circular":false,"line":1},{"type":"Base","namespace":"ActiveRecord::Migration","resolved_namespace":"ActiveRecord::Migration","caller":"CreateAds","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20140425021519_create_ads.rb","circular":false,"line":1},{"type":"Base","namespace":"ActiveRecord::Migration","resolved_namespace":"ActiveRecord::Migration","caller":"AddConfirmableToDevise","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20140505004746_add_confirmable_to_devise.rb","circular":false,"line":1},{"type":"Base","namespace":"ActiveRecord::Migration","resolved_namespace":"ActiveRecord::Migration","caller":"AddConfirmableForReal","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20140505013220_add_confirmable_for_real.rb","circular":false,"line":1},{"type":"Base","namespace":"User","resolved_namespace":"User","caller":"AddConfirmableForReal","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20140505013220_add_confirmable_for_real.rb","circular":false,"line":13},{"type":"Base","namespace":"ActiveRecord::Migration","resolved_namespace":"ActiveRecord::Migration","caller":"CreateFriendlyIdSlugs","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20161011120633_create_friendly_id_slugs.rb","circular":false,"line":1},{"type":"Base","namespace":"ActiveRecord::Migration","resolved_namespace":"ActiveRecord::Migration","caller":"AddSlugToLessons","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20161011144709_add_slug_to_lessons.rb","circular":false,"line":1},{"type":"Base","namespace":"ActiveRecord::Migration","resolved_namespace":"ActiveRecord::Migration","caller":"AddSlugToCourses","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20161011145454_add_slug_to_courses.rb","circular":false,"line":1},{"type":"Base","namespace":"ActiveRecord::Migration","resolved_namespace":"ActiveRecord::Migration","caller":"AddIndexToLessons","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20161011162302_add_index_to_lessons.rb","circular":false,"line":1},{"type":"Base","namespace":"ActiveRecord::Migration","resolved_namespace":"ActiveRecord::Migration","caller":"DropSplashEmailsTable","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20161017230606_drop_splash_emails_table.rb","circular":false,"line":1},{"type":"Base","namespace":"ActiveRecord::Migration","resolved_namespace":"ActiveRecord::Migration","caller":"RemoveTitleAndTitleUrlIndexFromCourses","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20161017232509_remove_title_and_title_url_index_from_courses.rb","circular":false,"line":1},{"type":"Base","namespace":"ActiveRecord::Migration","resolved_namespace":"ActiveRecord::Migration","caller":"DropUnusedTables","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20161019203200_drop_unused_tables.rb","circular":false,"line":1},{"type":"Base","namespace":"ActiveRecord::Migration","resolved_namespace":"ActiveRecord::Migration","caller":"RemoveRegBeforeConfFromUsersTable","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/migrate/20161022000746_remove_reg_before_conf_from_users_table.rb","circular":false,"line":1},{"type":"Base","namespace":"ActiveRecord::Schema","resolved_namespace":"ActiveRecord::Schema","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/schema.rb","circular":false,"line":14},{"type":"Base","namespace":"Course","resolved_namespace":"Course","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/seeds.rb","circular":false,"line":21},{"type":"Base","namespace":"Section","resolved_namespace":"Section","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/seeds.rb","circular":false,"line":21},{"type":"Base","namespace":"Lesson","resolved_namespace":"Lesson","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/seeds.rb","circular":false,"line":21},{"type":"Base","namespace":"Course","resolved_namespace":"Course","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/seeds.rb","circular":false,"line":22},{"type":"Base","namespace":"Section","resolved_namespace":"Section","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/seeds.rb","circular":false,"line":23},{"type":"Base","namespace":"Lesson","resolved_namespace":"Lesson","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/seeds.rb","circular":false,"line":24},{"type":"Base","namespace":"Course","resolved_namespace":"Course","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/seeds.rb","circular":false,"line":28},{"type":"Base","namespace":"Course","resolved_namespace":"Course","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/seeds.rb","circular":false,"line":31},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/seeds.rb","circular":false,"line":32},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/seeds.rb","circular":false,"line":34},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/seeds.rb","circular":false,"line":37},{"type":"Base","namespace":"Section","resolved_namespace":"Section","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/seeds.rb","circular":false,"line":44},{"type":"Base","namespace":"Section","resolved_namespace":"Section","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/seeds.rb","circular":false,"line":47},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/seeds.rb","circular":false,"line":48},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/seeds.rb","circular":false,"line":50},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/seeds.rb","circular":false,"line":53},{"type":"Base","namespace":"Lesson","resolved_namespace":"Lesson","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/seeds.rb","circular":false,"line":60},{"type":"Base","namespace":"Lesson","resolved_namespace":"Lesson","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/seeds.rb","circular":false,"line":63},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/seeds.rb","circular":false,"line":64},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/seeds.rb","circular":false,"line":66},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/seeds.rb","circular":false,"line":69},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/seeds.rb","circular":false,"line":86},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/seeds.rb","circular":false,"line":197},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/seeds.rb","circular":false,"line":648},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/seeds.rb","circular":false,"line":1011},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/seeds.rb","circular":false,"line":1515},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/seeds.rb","circular":false,"line":1933},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/seeds.rb","circular":false,"line":2475},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/seeds.rb","circular":false,"line":2674},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/seeds.rb","circular":false,"line":2675},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/seeds.rb","circular":false,"line":2676},{"type":"Base","namespace":"Course","resolved_namespace":"Course","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/seeds.rb","circular":false,"line":2676},{"type":"Base","namespace":"Section","resolved_namespace":"Section","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/seeds.rb","circular":false,"line":2676},{"type":"Base","namespace":"Lesson","resolved_namespace":"Lesson","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/seeds.rb","circular":false,"line":2676},{"type":"Base","namespace":"Course","resolved_namespace":"Course","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/seeds.rb","circular":false,"line":2677},{"type":"Base","namespace":"Section","resolved_namespace":"Section","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/seeds.rb","circular":false,"line":2678},{"type":"Base","namespace":"Lesson","resolved_namespace":"Lesson","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/seeds.rb","circular":false,"line":2679},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/seeds.rb","circular":false,"line":2684},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/seeds.rb","circular":false,"line":2688},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/seeds.rb","circular":false,"line":2690},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/seeds.rb","circular":false,"line":2695},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/seeds.rb","circular":false,"line":2697},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/seeds.rb","circular":false,"line":2702},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/seeds.rb","circular":false,"line":2704},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/db/seeds.rb","circular":false,"line":2708},{"type":"Base","namespace":"User","resolved_namespace":"User","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/features/step_definitions/cancel_account_steps.rb","circular":false,"line":7},{"type":"Base","namespace":"FactoryGirl","resolved_namespace":"FactoryGirl","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/features/step_definitions/confirmation_steps.rb","circular":false,"line":2},{"type":"Base","namespace":"FactoryGirl","resolved_namespace":"FactoryGirl","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/features/step_definitions/confirmation_steps.rb","circular":false,"line":15},{"type":"Base","namespace":"FactoryGirl","resolved_namespace":"FactoryGirl","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/features/step_definitions/lesson_steps.rb","circular":false,"line":2},{"type":"Base","namespace":"FactoryGirl","resolved_namespace":"FactoryGirl","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/features/step_definitions/lesson_steps.rb","circular":false,"line":6},{"type":"Base","namespace":"FactoryGirl","resolved_namespace":"FactoryGirl","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/features/step_definitions/lesson_steps.rb","circular":false,"line":10},{"type":"Base","namespace":"Section","resolved_namespace":"Section","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/features/step_definitions/lesson_steps.rb","circular":false,"line":14},{"type":"Base","namespace":"FactoryGirl","resolved_namespace":"FactoryGirl","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/features/step_definitions/lesson_steps.rb","circular":false,"line":17},{"type":"Base","namespace":"FactoryGirl","resolved_namespace":"FactoryGirl","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/features/step_definitions/lesson_steps.rb","circular":false,"line":22},{"type":"Base","namespace":"Lesson","resolved_namespace":"Lesson","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/features/step_definitions/lesson_steps.rb","circular":false,"line":40},{"type":"Base","namespace":"Lesson","resolved_namespace":"Lesson","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/features/step_definitions/lesson_steps.rb","circular":false,"line":67},{"type":"Base","namespace":"Lesson","resolved_namespace":"Lesson","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/features/step_definitions/lesson_steps.rb","circular":false,"line":74},{"type":"Base","namespace":"Lesson","resolved_namespace":"Lesson","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/features/step_definitions/lesson_steps.rb","circular":false,"line":171},{"type":"Base","namespace":"Lesson","resolved_namespace":"Lesson","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/features/step_definitions/lesson_steps.rb","circular":false,"line":179},{"type":"Base","namespace":"FactoryGirl","resolved_namespace":"FactoryGirl","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/features/step_definitions/link_omniauth.rb","circular":false,"line":2},{"type":"Base","namespace":"User","resolved_namespace":"User","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/features/step_definitions/link_omniauth.rb","circular":false,"line":8},{"type":"Base","namespace":"User","resolved_namespace":"User","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/features/step_definitions/link_omniauth.rb","circular":false,"line":13},{"type":"Base","namespace":"FactoryGirl","resolved_namespace":"FactoryGirl","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/features/step_definitions/sign_in_steps.rb","circular":false,"line":2},{"type":"Base","namespace":"FactoryGirl","resolved_namespace":"FactoryGirl","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/features/step_definitions/sign_in_steps.rb","circular":false,"line":25},{"type":"Base","namespace":"User","resolved_namespace":"User","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/features/step_definitions/users_steps.rb","circular":false,"line":20},{"type":"Base","namespace":"ActionMailer::Base","resolved_namespace":"ActionMailer::Base","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/features/step_definitions/users_steps.rb","circular":false,"line":24},{"type":"Base","namespace":"AuthHelpers","resolved_namespace":"AuthHelpers","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/features/support/auth_helpers.rb","circular":false,"line":15},{"type":"Base","namespace":"Capybara::Email::DSL","resolved_namespace":"Capybara::Email::DSL","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/features/support/capybara_email.rb","circular":false,"line":2},{"type":"Base","namespace":"SimpleCov","resolved_namespace":"SimpleCov","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/features/support/env.rb","circular":false,"line":8},{"type":"Base","namespace":"ActionController::Base","resolved_namespace":"ActionController::Base","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/features/support/env.rb","circular":false,"line":32},{"type":"Base","namespace":"DatabaseCleaner","resolved_namespace":"DatabaseCleaner","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/features/support/env.rb","circular":false,"line":37},{"type":"Base","namespace":"NameError","resolved_namespace":"NameError","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/features/support/env.rb","circular":false,"line":38},{"type":"Base","namespace":"Cucumber::Rails::Database","resolved_namespace":"Cucumber::Rails::Database","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/features/support/env.rb","circular":false,"line":60},{"type":"Base","namespace":"Capybara","resolved_namespace":"Capybara","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/features/support/env.rb","circular":false,"line":63},{"type":"Base","namespace":"Capybara","resolved_namespace":"Capybara","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/features/support/env.rb","circular":false,"line":64},{"type":"Base","namespace":"Capybara","resolved_namespace":"Capybara","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/features/support/env.rb","circular":false,"line":65},{"type":"Base","namespace":"Capybara","resolved_namespace":"Capybara","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/features/support/env.rb","circular":false,"line":66},{"type":"Base","namespace":"Capybara","resolved_namespace":"Capybara","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/features/support/env.rb","circular":false,"line":68},{"type":"Base","namespace":"Capybara::Poltergeist::Driver","resolved_namespace":"Capybara::Poltergeist::Driver","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/features/support/env.rb","circular":false,"line":69},{"type":"Base","namespace":"OmniAuth","resolved_namespace":"OmniAuth","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/features/support/env.rb","circular":false,"line":73},{"type":"Base","namespace":"OmniAuth","resolved_namespace":"OmniAuth","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/features/support/env.rb","circular":false,"line":75},{"type":"Base","namespace":"OmniAuth::AuthHash","resolved_namespace":"OmniAuth::AuthHash","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/features/support/env.rb","circular":false,"line":75},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/features/support/env.rb","circular":false,"line":84},{"type":"Base","namespace":"Devise","resolved_namespace":"Devise","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/features/support/env.rb","circular":false,"line":84},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/features/support/env.rb","circular":false,"line":85},{"type":"Base","namespace":"OmniAuth","resolved_namespace":"OmniAuth","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/features/support/env.rb","circular":false,"line":85},{"type":"Base","namespace":"OmniAuth","resolved_namespace":"OmniAuth","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/features/support/env.rb","circular":false,"line":89},{"type":"Base","namespace":"RSpec","resolved_namespace":"RSpec","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/controllers/application_controller_spec.rb","circular":false,"line":3},{"type":"Base","namespace":"ApplicationController","resolved_namespace":"ApplicationController","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/controllers/application_controller_spec.rb","circular":false,"line":3},{"type":"Base","namespace":"FactoryGirl","resolved_namespace":"FactoryGirl","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/controllers/application_controller_spec.rb","circular":false,"line":4},{"type":"Base","namespace":"Date","resolved_namespace":"Date","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/controllers/application_controller_spec.rb","circular":false,"line":7},{"type":"Base","namespace":"SmartRedirect","resolved_namespace":"SmartRedirect","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/controllers/application_controller_spec.rb","circular":false,"line":14},{"type":"Base","namespace":"RSpec","resolved_namespace":"RSpec","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/controllers/confirmations_controller_spec.rb","circular":false,"line":3},{"type":"Base","namespace":"ConfirmationsController","resolved_namespace":"ConfirmationsController","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/controllers/confirmations_controller_spec.rb","circular":false,"line":3},{"type":"Base","namespace":"FactoryGirl","resolved_namespace":"FactoryGirl","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/controllers/confirmations_controller_spec.rb","circular":false,"line":6},{"type":"Base","namespace":"Devise","resolved_namespace":"Devise","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/controllers/confirmations_controller_spec.rb","circular":false,"line":9},{"type":"Base","namespace":"RSpec","resolved_namespace":"RSpec","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/controllers/courses_controller_spec.rb","circular":false,"line":3},{"type":"Base","namespace":"CoursesController","resolved_namespace":"CoursesController","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/controllers/courses_controller_spec.rb","circular":false,"line":3},{"type":"Base","namespace":"Course","resolved_namespace":"Course","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/controllers/courses_controller_spec.rb","circular":false,"line":11},{"type":"Base","namespace":"Course","resolved_namespace":"Course","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/controllers/courses_controller_spec.rb","circular":false,"line":29},{"type":"Base","namespace":"RSpec","resolved_namespace":"RSpec","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/controllers/lessons_controller_spec.rb","circular":false,"line":3},{"type":"Base","namespace":"LessonsController","resolved_namespace":"LessonsController","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/controllers/lessons_controller_spec.rb","circular":false,"line":3},{"type":"Base","namespace":"Lesson","resolved_namespace":"Lesson","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/controllers/lessons_controller_spec.rb","circular":false,"line":11},{"type":"Base","namespace":"ENV","resolved_namespace":"ENV","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/controllers/lessons_controller_spec.rb","circular":false,"line":17},{"type":"Base","namespace":"Lesson","resolved_namespace":"Lesson","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/controllers/lessons_controller_spec.rb","circular":false,"line":47},{"type":"Base","namespace":"ActiveRecord::RecordNotFound","resolved_namespace":"ActiveRecord::RecordNotFound","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/controllers/lessons_controller_spec.rb","circular":false,"line":48},{"type":"Base","namespace":"ActionController::RoutingError","resolved_namespace":"ActionController::RoutingError","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/controllers/lessons_controller_spec.rb","circular":false,"line":53},{"type":"Base","namespace":"ENV","resolved_namespace":"ENV","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/controllers/lessons_controller_spec.rb","circular":false,"line":62},{"type":"Base","namespace":"Ad","resolved_namespace":"Ad","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/controllers/lessons_controller_spec.rb","circular":false,"line":65},{"type":"Base","namespace":"LessonCompletionsController","resolved_namespace":"LessonCompletionsController","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/controllers/lesson_completions_controller_spec.rb","circular":false,"line":3},{"type":"Base","namespace":"Lesson","resolved_namespace":"Lesson","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/controllers/lesson_completions_controller_spec.rb","circular":false,"line":25},{"type":"Base","namespace":"LessonCompletion","resolved_namespace":"LessonCompletion","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/controllers/lesson_completions_controller_spec.rb","circular":false,"line":33},{"type":"Base","namespace":"LessonCompletion","resolved_namespace":"LessonCompletion","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/controllers/lesson_completions_controller_spec.rb","circular":false,"line":45},{"type":"Base","namespace":"OmniauthCallbacksController","resolved_namespace":"OmniauthCallbacksController","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/controllers/omniauth_callbacks_controller_spec.rb","circular":false,"line":3},{"type":"Base","namespace":"Time","resolved_namespace":"Time","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/controllers/omniauth_callbacks_controller_spec.rb","circular":false,"line":18},{"type":"Base","namespace":"Devise","resolved_namespace":"Devise","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/controllers/omniauth_callbacks_controller_spec.rb","circular":false,"line":21},{"type":"Base","namespace":"OmniAuth","resolved_namespace":"OmniAuth","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/controllers/omniauth_callbacks_controller_spec.rb","circular":false,"line":22},{"type":"Base","namespace":"LinkOmniauth","resolved_namespace":"LinkOmniauth","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/controllers/omniauth_callbacks_controller_spec.rb","circular":false,"line":30},{"type":"Base","namespace":"NewOrExistingOmniauthUser","resolved_namespace":"NewOrExistingOmniauthUser","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/controllers/omniauth_callbacks_controller_spec.rb","circular":false,"line":36},{"type":"Base","namespace":"FactoryGirl","resolved_namespace":"FactoryGirl","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/controllers/omniauth_callbacks_controller_spec.rb","circular":false,"line":101},{"type":"Base","namespace":"RSpec","resolved_namespace":"RSpec","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/controllers/registrations_controller_spec.rb","circular":false,"line":3},{"type":"Base","namespace":"RegistrationsController","resolved_namespace":"RegistrationsController","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/controllers/registrations_controller_spec.rb","circular":false,"line":3},{"type":"Base","namespace":"Devise","resolved_namespace":"Devise","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/controllers/registrations_controller_spec.rb","circular":false,"line":6},{"type":"Base","namespace":"FactoryGirl","resolved_namespace":"FactoryGirl","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/controllers/registrations_controller_spec.rb","circular":false,"line":41},{"type":"Base","namespace":"SitemapController","resolved_namespace":"SitemapController","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/controllers/sitemap_controller_spec.rb","circular":false,"line":3},{"type":"Base","namespace":"Course","resolved_namespace":"Course","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/controllers/sitemap_controller_spec.rb","circular":false,"line":12},{"type":"Base","namespace":"StaticPagesController","resolved_namespace":"StaticPagesController","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/controllers/static_pages_controller_spec.rb","circular":false,"line":3},{"type":"Base","namespace":"ContactMailer","resolved_namespace":"ContactMailer","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/controllers/static_pages_controller_spec.rb","circular":false,"line":77},{"type":"Base","namespace":"UsersController","resolved_namespace":"UsersController","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/controllers/users_controller_spec.rb","circular":false,"line":3},{"type":"Base","namespace":"FactoryGirl","resolved_namespace":"FactoryGirl","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/controllers/users_controller_spec.rb","circular":false,"line":5},{"type":"Base","namespace":"FactoryGirl","resolved_namespace":"FactoryGirl","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/controllers/users_controller_spec.rb","circular":false,"line":6},{"type":"Base","namespace":"FactoryGirl","resolved_namespace":"FactoryGirl","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/factories/factories.rb","circular":false,"line":1},{"type":"Base","namespace":"Time","resolved_namespace":"Time","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/factories/factories.rb","circular":false,"line":13},{"type":"Base","namespace":"FactoryGirl","resolved_namespace":"FactoryGirl","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/features/auth_spec.rb","circular":false,"line":10},{"type":"Base","namespace":"FactoryGirl","resolved_namespace":"FactoryGirl","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/features/email_spec.rb","circular":false,"line":4},{"type":"Base","namespace":"FactoryGirl","resolved_namespace":"FactoryGirl","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/features/email_spec.rb","circular":false,"line":5},{"type":"Base","namespace":"FactoryGirl","resolved_namespace":"FactoryGirl","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/features/email_spec.rb","circular":false,"line":6},{"type":"Base","namespace":"ActionMailer::Base","resolved_namespace":"ActionMailer::Base","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/features/email_spec.rb","circular":false,"line":14},{"type":"Base","namespace":"FactoryGirl","resolved_namespace":"FactoryGirl","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/features/email_spec.rb","circular":false,"line":22},{"type":"Base","namespace":"Course","resolved_namespace":"Course","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/features/email_spec.rb","circular":false,"line":43},{"type":"Base","namespace":"Lesson","resolved_namespace":"Lesson","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/features/email_spec.rb","circular":false,"line":44},{"type":"Base","namespace":"ActionMailer::Base","resolved_namespace":"ActionMailer::Base","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/features/email_spec.rb","circular":false,"line":50},{"type":"Base","namespace":"Lesson","resolved_namespace":"Lesson","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/features/email_spec.rb","circular":false,"line":58},{"type":"Base","namespace":"ActionMailer::Base","resolved_namespace":"ActionMailer::Base","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/features/email_spec.rb","circular":false,"line":65},{"type":"Base","namespace":"FactoryGirl","resolved_namespace":"FactoryGirl","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/features/email_spec.rb","circular":false,"line":85},{"type":"Base","namespace":"Time","resolved_namespace":"Time","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/features/email_spec.rb","circular":false,"line":85},{"type":"Base","namespace":"FactoryGirl","resolved_namespace":"FactoryGirl","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/features/signup_spec.rb","circular":false,"line":7},{"type":"Base","namespace":"FactoryGirl","resolved_namespace":"FactoryGirl","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/features/signup_spec.rb","circular":false,"line":8},{"type":"Base","namespace":"FactoryGirl","resolved_namespace":"FactoryGirl","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/features/signup_spec.rb","circular":false,"line":9},{"type":"Base","namespace":"FactoryGirl","resolved_namespace":"FactoryGirl","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/features/signup_spec.rb","circular":false,"line":20},{"type":"Base","namespace":"ActionMailer::Base","resolved_namespace":"ActionMailer::Base","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/features/signup_spec.rb","circular":false,"line":29},{"type":"Base","namespace":"FactoryGirl","resolved_namespace":"FactoryGirl","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/features/signup_spec.rb","circular":false,"line":55},{"type":"Base","namespace":"Time","resolved_namespace":"Time","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/features/signup_spec.rb","circular":false,"line":56},{"type":"Base","namespace":"Time","resolved_namespace":"Time","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/features/signup_spec.rb","circular":false,"line":57},{"type":"Base","namespace":"ActionMailer::Base","resolved_namespace":"ActionMailer::Base","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/features/signup_spec.rb","circular":false,"line":71},{"type":"Base","namespace":"FactoryGirl","resolved_namespace":"FactoryGirl","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/features/smart_redirect.rb","circular":false,"line":9},{"type":"Base","namespace":"FactoryGirl","resolved_namespace":"FactoryGirl","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/features/smart_redirect.rb","circular":false,"line":10},{"type":"Base","namespace":"FactoryGirl","resolved_namespace":"FactoryGirl","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/features/smart_redirect.rb","circular":false,"line":11},{"type":"Base","namespace":"FactoryGirl","resolved_namespace":"FactoryGirl","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/features/smart_redirect.rb","circular":false,"line":106},{"type":"Base","namespace":"FactoryGirl","resolved_namespace":"FactoryGirl","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/features/users_spec.rb","circular":false,"line":7},{"type":"Base","namespace":"FactoryGirl","resolved_namespace":"FactoryGirl","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/features/users_spec.rb","circular":false,"line":8},{"type":"Base","namespace":"FactoryGirl","resolved_namespace":"FactoryGirl","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/features/users_spec.rb","circular":false,"line":44},{"type":"Base","namespace":"AdminFlashHelper","resolved_namespace":"AdminFlashHelper","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/helpers/admin_flash_helper_spec.rb","circular":false,"line":3},{"type":"Base","namespace":"ApplicationHelper","resolved_namespace":"ApplicationHelper","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/helpers/application_helper_spec.rb","circular":false,"line":3},{"type":"Base","namespace":"MarkdownConverter","resolved_namespace":"MarkdownConverter","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/helpers/application_helper_spec.rb","circular":false,"line":29},{"type":"Base","namespace":"LessonsHelper","resolved_namespace":"LessonsHelper","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/helpers/lessons_helper_spec.rb","circular":false,"line":3},{"type":"Base","namespace":"UsersHelper","resolved_namespace":"UsersHelper","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/helpers/users_helper_spec.rb","circular":false,"line":3},{"type":"Base","namespace":"DateTime","resolved_namespace":"DateTime","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/helpers/users_helper_spec.rb","circular":false,"line":5},{"type":"Base","namespace":"SocialMediaLink","resolved_namespace":"SocialMediaLink","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/helpers/users_helper_spec.rb","circular":false,"line":9},{"type":"Base","namespace":"GravatarUrlBuilder","resolved_namespace":"GravatarUrlBuilder","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/helpers/users_helper_spec.rb","circular":false,"line":23},{"type":"Base","namespace":"UserMailer","resolved_namespace":"UserMailer","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/mailers/user_mailer_spec.rb","circular":false,"line":3},{"type":"Base","namespace":"AdminFlash","resolved_namespace":"AdminFlash","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/models/admin_flash_spec.rb","circular":false,"line":3},{"type":"Base","namespace":"AdminFlash","resolved_namespace":"AdminFlash","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/models/admin_flash_spec.rb","circular":false,"line":17},{"type":"Base","namespace":"Time","resolved_namespace":"Time","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/models/admin_flash_spec.rb","circular":false,"line":20},{"type":"Base","namespace":"AdminFlash","resolved_namespace":"AdminFlash","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/models/admin_flash_spec.rb","circular":false,"line":28},{"type":"Base","namespace":"AdminFlash","resolved_namespace":"AdminFlash","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/models/admin_flash_spec.rb","circular":false,"line":34},{"type":"Base","namespace":"Ad","resolved_namespace":"Ad","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/models/ad_spec.rb","circular":false,"line":3},{"type":"Base","namespace":"Ad","resolved_namespace":"Ad","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/models/ad_spec.rb","circular":false,"line":6},{"type":"Base","namespace":"Ad","resolved_namespace":"Ad","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/models/ad_spec.rb","circular":false,"line":18},{"type":"Base","namespace":"Ad","resolved_namespace":"Ad","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/models/ad_spec.rb","circular":false,"line":23},{"type":"Base","namespace":"Ad","resolved_namespace":"Ad","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/models/ad_spec.rb","circular":false,"line":33},{"type":"Base","namespace":"Ad","resolved_namespace":"Ad","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/models/ad_spec.rb","circular":false,"line":38},{"type":"Base","namespace":"Course","resolved_namespace":"Course","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/models/course_spec.rb","circular":false,"line":3},{"type":"Base","namespace":"Course","resolved_namespace":"Course","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/models/course_spec.rb","circular":false,"line":4},{"type":"Base","namespace":"LessonCompletion","resolved_namespace":"LessonCompletion","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/models/lesson_completion_spec.rb","circular":false,"line":3},{"type":"Base","namespace":"LessonCompletion","resolved_namespace":"LessonCompletion","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/models/lesson_completion_spec.rb","circular":false,"line":5},{"type":"Base","namespace":"RSpec","resolved_namespace":"RSpec","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/models/lesson_spec.rb","circular":false,"line":3},{"type":"Base","namespace":"Lesson","resolved_namespace":"Lesson","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/models/lesson_spec.rb","circular":false,"line":3},{"type":"Base","namespace":"Lesson","resolved_namespace":"Lesson","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/models/lesson_spec.rb","circular":false,"line":5},{"type":"Base","namespace":"FindLesson","resolved_namespace":"FindLesson","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/models/lesson_spec.rb","circular":false,"line":24},{"type":"Base","namespace":"VCR","resolved_namespace":"VCR","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/models/lesson_spec.rb","circular":false,"line":68},{"type":"Base","namespace":"VCR","resolved_namespace":"VCR","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/models/lesson_spec.rb","circular":false,"line":75},{"type":"Base","namespace":"VCR","resolved_namespace":"VCR","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/models/lesson_spec.rb","circular":false,"line":77},{"type":"Base","namespace":"Section","resolved_namespace":"Section","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/models/section_spec.rb","circular":false,"line":3},{"type":"Base","namespace":"Section","resolved_namespace":"Section","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/models/section_spec.rb","circular":false,"line":4},{"type":"Base","namespace":"User","resolved_namespace":"User","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/models/user_spec.rb","circular":false,"line":5},{"type":"Base","namespace":"User","resolved_namespace":"User","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/models/user_spec.rb","circular":false,"line":8},{"type":"Base","namespace":"User","resolved_namespace":"User","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/models/user_spec.rb","circular":false,"line":75},{"type":"Base","namespace":"User","resolved_namespace":"User","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/models/user_spec.rb","circular":false,"line":84},{"type":"Base","namespace":"SimpleCov","resolved_namespace":"SimpleCov","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/rails_helper.rb","circular":false,"line":4},{"type":"Base","namespace":"ENV","resolved_namespace":"ENV","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/rails_helper.rb","circular":false,"line":6},{"type":"Base","namespace":"File","resolved_namespace":"File","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/rails_helper.rb","circular":false,"line":7},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/rails_helper.rb","circular":false,"line":9},{"type":"Base","namespace":"Dir","resolved_namespace":"Dir","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/rails_helper.rb","circular":false,"line":29},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/rails_helper.rb","circular":false,"line":29},{"type":"Base","namespace":"Timeout","resolved_namespace":"Timeout","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/rails_helper.rb","circular":false,"line":32},{"type":"Base","namespace":"Capybara","resolved_namespace":"Capybara","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/rails_helper.rb","circular":false,"line":32},{"type":"Base","namespace":"ActiveRecord::Migration","resolved_namespace":"ActiveRecord::Migration","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/rails_helper.rb","circular":false,"line":42},{"type":"Base","namespace":"RSpec","resolved_namespace":"RSpec","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/rails_helper.rb","circular":false,"line":44},{"type":"Base","namespace":"Capybara::DSL","resolved_namespace":"Capybara::DSL","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/rails_helper.rb","circular":false,"line":47},{"type":"Base","namespace":"Capybara","resolved_namespace":"Capybara","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/rails_helper.rb","circular":false,"line":48},{"type":"Base","namespace":"Capybara","resolved_namespace":"Capybara","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/rails_helper.rb","circular":false,"line":49},{"type":"Base","namespace":"Capybara","resolved_namespace":"Capybara","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/rails_helper.rb","circular":false,"line":50},{"type":"Base","namespace":"Capybara","resolved_namespace":"Capybara","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/rails_helper.rb","circular":false,"line":52},{"type":"Base","namespace":"Capybara::Poltergeist::Driver","resolved_namespace":"Capybara::Poltergeist::Driver","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/rails_helper.rb","circular":false,"line":53},{"type":"Base","namespace":"Phantomjs","resolved_namespace":"Phantomjs","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/rails_helper.rb","circular":false,"line":53},{"type":"Base","namespace":"Capybara","resolved_namespace":"Capybara","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/rails_helper.rb","circular":false,"line":57},{"type":"Base","namespace":"DatabaseCleaner","resolved_namespace":"DatabaseCleaner","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/rails_helper.rb","circular":false,"line":58},{"type":"Base","namespace":"DatabaseCleaner","resolved_namespace":"DatabaseCleaner","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/rails_helper.rb","circular":false,"line":60},{"type":"Base","namespace":"DatabaseCleaner","resolved_namespace":"DatabaseCleaner","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/rails_helper.rb","circular":false,"line":62},{"type":"Base","namespace":"DatabaseCleaner","resolved_namespace":"DatabaseCleaner","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/rails_helper.rb","circular":false,"line":66},{"type":"Base","namespace":"::Rails","resolved_namespace":"Rails","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/rails_helper.rb","circular":false,"line":69},{"type":"Base","namespace":"OmniAuth","resolved_namespace":"OmniAuth","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/rails_helper.rb","circular":false,"line":99},{"type":"Base","namespace":"OmniAuth","resolved_namespace":"OmniAuth","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/rails_helper.rb","circular":false,"line":100},{"type":"Base","namespace":"OmniAuth::AuthHash","resolved_namespace":"OmniAuth::AuthHash","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/rails_helper.rb","circular":false,"line":100},{"type":"Base","namespace":"Shoulda::Matchers::ActiveModel","resolved_namespace":"Shoulda::Matchers::ActiveModel","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/rails_helper.rb","circular":false,"line":105},{"type":"Base","namespace":"Shoulda::Matchers::ActiveRecord","resolved_namespace":"Shoulda::Matchers::ActiveRecord","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/rails_helper.rb","circular":false,"line":106},{"type":"Base","namespace":"RSpec","resolved_namespace":"RSpec","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/services/find_lesson_spec.rb","circular":false,"line":3},{"type":"Base","namespace":"FindLesson","resolved_namespace":"FindLesson","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/services/find_lesson_spec.rb","circular":false,"line":3},{"type":"Base","namespace":"FindLesson","resolved_namespace":"FindLesson","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/services/find_lesson_spec.rb","circular":false,"line":4},{"type":"Base","namespace":"FindLesson","resolved_namespace":"FindLesson","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/services/find_lesson_spec.rb","circular":false,"line":25},{"type":"Base","namespace":"GravatarUrlBuilder","resolved_namespace":"GravatarUrlBuilder","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/services/gravatar_url_builder_spec.rb","circular":false,"line":3},{"type":"Base","namespace":"GravatarUrlBuilder","resolved_namespace":"GravatarUrlBuilder","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/services/gravatar_url_builder_spec.rb","circular":false,"line":5},{"type":"Base","namespace":"Digest::MD5","resolved_namespace":"Digest::MD5","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/services/gravatar_url_builder_spec.rb","circular":false,"line":13},{"type":"Base","namespace":"RSpec","resolved_namespace":"RSpec","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/services/link_omniauth_spec.rb","circular":false,"line":3},{"type":"Base","namespace":"LinkOmniauth","resolved_namespace":"LinkOmniauth","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/services/link_omniauth_spec.rb","circular":false,"line":3},{"type":"Base","namespace":"LinkOmniauth","resolved_namespace":"LinkOmniauth","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/services/link_omniauth_spec.rb","circular":false,"line":4},{"type":"Base","namespace":"RSpec","resolved_namespace":"RSpec","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/services/markdown_converter_spec.rb","circular":false,"line":3},{"type":"Base","namespace":"MarkdownConverter","resolved_namespace":"MarkdownConverter","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/services/markdown_converter_spec.rb","circular":false,"line":3},{"type":"Base","namespace":"MarkdownConverter","resolved_namespace":"MarkdownConverter","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/services/markdown_converter_spec.rb","circular":false,"line":4},{"type":"Base","namespace":"Redcarpet::Markdown","resolved_namespace":"Redcarpet::Markdown","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/services/markdown_converter_spec.rb","circular":false,"line":11},{"type":"Base","namespace":"Redcarpet::Render::HTML","resolved_namespace":"Redcarpet::Render::HTML","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/services/markdown_converter_spec.rb","circular":false,"line":12},{"type":"Base","namespace":"RSpec","resolved_namespace":"RSpec","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/services/new_or_existing_omniauth_user_spec.rb","circular":false,"line":3},{"type":"Base","namespace":"NewOrExistingOmniauthUser","resolved_namespace":"NewOrExistingOmniauthUser","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/services/new_or_existing_omniauth_user_spec.rb","circular":false,"line":3},{"type":"Base","namespace":"NewOrExistingOmniauthUser","resolved_namespace":"NewOrExistingOmniauthUser","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/services/new_or_existing_omniauth_user_spec.rb","circular":false,"line":5},{"type":"Base","namespace":"User","resolved_namespace":"User","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/services/new_or_existing_omniauth_user_spec.rb","circular":false,"line":13},{"type":"Base","namespace":"RSpec","resolved_namespace":"RSpec","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/services/smart_redirect_spec.rb","circular":false,"line":3},{"type":"Base","namespace":"SmartRedirect","resolved_namespace":"SmartRedirect","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/services/smart_redirect_spec.rb","circular":false,"line":3},{"type":"Base","namespace":"SmartRedirect","resolved_namespace":"SmartRedirect","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/services/smart_redirect_spec.rb","circular":false,"line":4},{"type":"Base","namespace":"RSpec","resolved_namespace":"RSpec","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/services/social_media_link_spec.rb","circular":false,"line":3},{"type":"Base","namespace":"SocialMediaLink","resolved_namespace":"SocialMediaLink","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/services/social_media_link_spec.rb","circular":false,"line":3},{"type":"Base","namespace":"SocialMediaLink","resolved_namespace":"SocialMediaLink","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/services/social_media_link_spec.rb","circular":false,"line":4},{"type":"Base","namespace":"SimpleCov","resolved_namespace":"SimpleCov","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/spec_helper.rb","circular":false,"line":2},{"type":"Base","namespace":"ENV","resolved_namespace":"ENV","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/spec_helper.rb","circular":false,"line":5},{"type":"Base","namespace":"File","resolved_namespace":"File","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/spec_helper.rb","circular":false,"line":6},{"type":"Base","namespace":"RSpec","resolved_namespace":"RSpec","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/spec_helper.rb","circular":false,"line":13},{"type":"Base","namespace":"Rack::Test::Methods","resolved_namespace":"Rack::Test::Methods","caller":"ApiHelper","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/support/api_helper.rb","circular":false,"line":2},{"type":"Base","namespace":"Rails","resolved_namespace":"Rails","caller":"ApiHelper","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/support/api_helper.rb","circular":false,"line":5},{"type":"Base","namespace":"RSpec","resolved_namespace":"RSpec","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/support/api_helper.rb","circular":false,"line":9},{"type":"Base","namespace":"ApiHelper","resolved_namespace":"ApiHelper","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/support/api_helper.rb","circular":false,"line":10},{"type":"Base","namespace":"RSpec","resolved_namespace":"RSpec","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/support/devise.rb","circular":false,"line":1},{"type":"Base","namespace":"Devise::TestHelpers","resolved_namespace":"Devise::TestHelpers","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/support/devise.rb","circular":false,"line":2},{"type":"Base","namespace":"RSpec","resolved_namespace":"RSpec","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/support/javascript.rb","circular":false,"line":8},{"type":"Base","namespace":"DatabaseCleaner","resolved_namespace":"DatabaseCleaner","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/support/javascript.rb","circular":false,"line":10},{"type":"Base","namespace":"DatabaseCleaner","resolved_namespace":"DatabaseCleaner","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/support/javascript.rb","circular":false,"line":11},{"type":"Base","namespace":"Capybara","resolved_namespace":"Capybara","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/support/javascript.rb","circular":false,"line":16},{"type":"Base","namespace":"DatabaseCleaner","resolved_namespace":"DatabaseCleaner","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/support/javascript.rb","circular":false,"line":17},{"type":"Base","namespace":"DatabaseCleaner","resolved_namespace":"DatabaseCleaner","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/support/javascript.rb","circular":false,"line":19},{"type":"Base","namespace":"DatabaseCleaner","resolved_namespace":"DatabaseCleaner","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/support/javascript.rb","circular":false,"line":20},{"type":"Base","namespace":"Capybara","resolved_namespace":"Capybara","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/support/javascript.rb","circular":false,"line":25},{"type":"Base","namespace":"DatabaseCleaner","resolved_namespace":"DatabaseCleaner","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/support/javascript.rb","circular":false,"line":26},{"type":"Base","namespace":"Devise","resolved_namespace":"Devise","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/support/omniauth_helper.rb","circular":false,"line":4},{"type":"Base","namespace":"Capybara","resolved_namespace":"Capybara","caller":"Selectors","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/support/selectors.rb","circular":false,"line":12},{"type":"Base","namespace":"VCR","resolved_namespace":"VCR","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/support/vcr.rb","circular":false,"line":1},{"type":"Base","namespace":"ENV","resolved_namespace":"ENV","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/support/vcr.rb","circular":false,"line":4},{"type":"Base","namespace":"ENV","resolved_namespace":"ENV","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/support/vcr.rb","circular":false,"line":5},{"type":"Base","namespace":"ENV","resolved_namespace":"ENV","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/support/vcr.rb","circular":false,"line":6},{"type":"Base","namespace":"Rake","resolved_namespace":"Rake","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/tasks/curriculum_spec.rb","circular":false,"line":6},{"type":"Base","namespace":"Rake::Task","resolved_namespace":"Rake::Task","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/tasks/curriculum_spec.rb","circular":false,"line":7},{"type":"Base","namespace":"FactoryGirl","resolved_namespace":"FactoryGirl","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/tasks/curriculum_spec.rb","circular":false,"line":11},{"type":"Base","namespace":"Rake::Task","resolved_namespace":"Rake::Task","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/tasks/curriculum_spec.rb","circular":false,"line":14},{"type":"Base","namespace":"VCR","resolved_namespace":"VCR","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/tasks/curriculum_spec.rb","circular":false,"line":16},{"type":"Base","namespace":"Rake","resolved_namespace":"Rake","caller":"","file":"C:/Users/jpms2/Desktop/tg/theodinproject/spec/tasks/curriculum_spec.rb","circular":false,"line":17}]};
+     var layout = null;
+    </script>
+    <script type='text/javascript'>var classForCircular = function(d) {
+  return d.circular ? 'circular' : '';
+};
+
+var svg = d3.select(".dependency_graph svg"),
+    $svg = $('.dependency_graph svg'),
+    width = $svg.width(),
+    height = $svg.height(),
+    drag = d3.drag()
+    .on("start", dragstarted)
+    .on("drag", dragged)
+    .on("end", dragended),
+    dup_definitions = data.definitions.map(function(d){
+      return {
+        id: d.namespace,
+        file: d.file,
+        type: d.type,
+        lines: d.lines,
+        circular: d.circular
+      };
+    }),
+    definitions = _(dup_definitions).groupBy('id').map(function(group) {
+      return {
+        id: group[0].id,
+        type: group[0].type,
+        lines: _(group).sumBy('lines'),
+        circular: group[0].circular,
+        files: group.map(function(d){ return d.file; })
+      };
+    }).value(),
+    namespaces = definitions.map(function(d){ return d.id; }),
+    relations = data.relations.map(function(d){ return {source: d.caller, target: d.resolved_namespace, circular: d.circular}; }),
+    max_lines = _.maxBy(definitions, 'lines').lines,
+    max_circle_r = 50;
+
+relations = relations.filter(function(d){
+  return namespaces.indexOf(d.source) >= 0 && namespaces.indexOf(d.target) >= 0;
+});
+relations = _.uniqWith(relations, _.isEqual);
+
+var zoom = d3.zoom()
+    .on("zoom", function () {
+      container.attr("transform", d3.event.transform);
+    });
+
+svg.call(zoom)
+  .on("dblclick.zoom", null);
+
+var container = svg.append('g'),
+    simulation = d3.forceSimulation()
+    .force("link", d3.forceLink().id(function(d) { return d.id; }))
+    .force("charge", d3.forceManyBody())
+    .force("center", d3.forceCenter(width / 2, height / 2))
+    .force("forceCollide", d3.forceCollide(80));
+
+simulation
+  .nodes(definitions)
+  .on("tick", ticked);
+
+simulation.force("link")
+  .links(relations);
+
+var link = container.append("g")
+    .attr("class", "links")
+    .selectAll("path")
+    .data(relations)
+    .enter().append("path")
+    .attr("class", function(d) { return 'link ' + classForCircular(d); })
+    .attr("marker-end", function(d){ return "url(#" + d.target.id + ")"; }),
+    node = container.append("g")
+    .attr("class", "nodes")
+    .selectAll("g")
+    .data(definitions)
+    .enter().append("g")
+    .call(drag)
+    .on("dblclick", dblclick),
+    circle = node
+    .append("circle")
+    .attr("r", function(d) { return d.lines / max_lines * max_circle_r + 6; })
+    .attr("class", function (d) { return classForCircular(d) ; }),
+    type = node
+    .append("text")
+    .attr("class", "type")
+    .attr("x", "-0.4em")
+    .attr("y", "0.4em")
+    .text(function(d) { return d.type[0]; }),
+    text = node
+    .append("text")
+    .attr("class", "namespace")
+    .attr("x", function(d) { return d.lines / max_lines * max_circle_r + 8; })
+    .attr("y", ".31em")
+    .text(function(d) { return d.id; });
+
+container.append("defs").selectAll("marker")
+  .data(definitions)
+  .enter().append("marker")
+  .attr("id", function(d) { return d.id; })
+  .attr("viewBox", "0 -5 10 10")
+  .attr("refX", function(d){ return d.lines / max_lines * max_circle_r + 20; })
+  .attr("refY", 0)
+  .attr("markerWidth", 6)
+  .attr("markerHeight", 6)
+  .attr("orient", "auto")
+  .append("path")
+  .attr("d", "M0,-5L10,0L0,5");
+
+function ticked() {
+  link.attr("d", linkArc);
+  node.attr("transform", transform);
+}
+
+function linkArc(d) {
+  var dx = d.target.x - d.source.x,
+      dy = d.target.y - d.source.y,
+      dr =  0;
+  return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
+}
+
+function dragstarted(d) {
+  if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+  d3.select(this).classed("fixed", true);
+  d.fx = d.x;
+  d.fy = d.y;
+}
+
+function dragged(d) {
+  d.fx = d3.event.x;
+  d.fy = d3.event.y;
+}
+
+function dragended(d) {
+  if (!d3.event.active) simulation.alphaTarget(0);
+}
+
+function dblclick(d) {
+  d3.select(this).classed("fixed", false);
+  d.fx = null;
+  d.fy = null;
+}
+
+function transform(d) {
+  return "translate(" + d.x + "," + d.y + ")";
+}
+
+var state = {
+  get: function(){
+    var positions = [];
+    rubrowser.definitions.forEach(function(elem){
+      if( elem.fx !== undefined && elem.fy !== undefined) {
+        positions.push({
+          id: elem.id,
+          x: elem.fx,
+          y: elem.fy
+        });
+      }
+    });
+    return positions;
+  },
+
+  set: function(layout){
+    if ( !layout ) { return; }
+    layout.forEach(function(pos) {
+      var definition = node.filter(function(e) { return e.id == pos.id; })
+      definition.classed("fixed", true);
+
+      var datum = definition.data()[0]
+      if( datum ) {
+        datum.fx = pos.x
+        datum.fy = pos.y
+      }
+    });
+  }
+}
+
+node.on('mouseover', function(d) {
+  var relatives = [];
+  link.classed('downlighted', function(l) {
+    if (d === l.source || d === l.target){
+      relatives.push(l.source);
+      relatives.push(l.target);
+      return false;
+    }else{
+      return true;
+    }
+  });
+  node.classed('downlighted', function(n) {
+    return !(n == d || relatives.indexOf(n) > -1);
+  });
+});
+
+node.on('mouseout', function() {
+  link.classed('downlighted', false);
+  node.classed('downlighted', false);
+});
+
+window.rubrowser = {
+  data: data,
+  definitions: definitions,
+  relations: relations,
+  simulation: simulation,
+  node: node,
+  link: link,
+  state: state
+};
+
+rubrowser.state.set(layout);
+</script>
+
+    
+      <div class="toolbox">
+  <div class="card ml-2 mt-2">
+    <div class="card-header">Search</div>
+    <div class="card-body">
+      <label class="form-label">Namespace</label>
+      <textarea id="highlight_by_namespace" class="form-control" rows="5"></textarea>
+    </div>
+    <div class="card-body">
+      <label class="form-label">File Path</label>
+      <textarea id="highlight_by_file_path" class="form-control" rows="5"></textarea>
+    </div>
+    <div class="card-body">
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="highlight_modules"/>
+        <label class="form-check-label">Modules</label>
+      </div>
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="highlight_classes"/>
+        <label class="form-check-label">Classes</label>
+      </div>
+    </div>
+  </div>
+  <div class="card ml-2 mt-2">
+    <div class="card-header">Ignore</div>
+    <div class="card-body">
+      <label>Namespace</label>
+      <textarea id="ignore_by_namespace" class="form-control" rows="5"></textarea>
+    </div>
+    <div class="card-body">
+      <label>File Path</label>
+      <textarea id="ignore_by_file_path" class="form-control" rows="5"></textarea>
+    </div>
+    <div class="card-body">
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="ignore_modules"/>
+        <label class="form-check-label">Modules</label>
+      </div>
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="ignore_classes"/>
+        <label class="form-check-label">Classes</label>
+      </div>
+    </div>
+  </div>
+  <div class="card ml-2 mt-2">
+    <div class="card-header">Display</div>
+    <div class="card-body">
+      <button type="button" id="download_layout" class="btn btn-secondary btn-block">Download layout</button>
+      <button type="button" id="pause_simulation" class="btn btn-secondary btn-block">Pause animation</button>
+      <button type="button" id="fix_all" class="btn btn-secondary btn-block">Fix all</button>
+      <button type="button" id="release_all" class="btn btn-secondary btn-block">Release all</button>
+    </div>
+    <div class="card-body">
+      <label class="form-label">Force Collide</label>
+      <input id="force_collide" class="form-control" type="range" value="80" min="0" max="500"/>
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="hide_namespaces"/>
+        <label class="form-check-label">Hide namespaces</label>
+      </div>
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="hide_relations"/>
+        <label class="form-check-label">Hide relations</label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="information_panel" class="card"></div>
+
+      <script type='text/javascript'>$(document).on('click', '.card-header', function(){
+  $(this).siblings().toggle();
+});
+
+// --------------------------------
+// Details Panel
+// --------------------------------
+rubrowser.node.on('click', function(d){
+  var namespace = d.id;
+  var lines = d.lines;
+  var dependents = rubrowser.relations.filter(function(i){ return i.target.id == namespace; });
+  var dependencies = rubrowser.relations.filter(function(i){ return i.source.id == namespace; });
+  var definitions = rubrowser.data.definitions.filter(function(i){ return i.namespace == namespace; });
+  var relations = rubrowser.data.relations.filter(function(i){ return i.resolved_namespace == namespace || i.caller == namespace; });
+
+  var content = $('<div>');
+  content.append('<label><strong>'+namespace+' ('+d.lines+' Lines)</strong></label>');
+
+  content.append('<strong>Defined in:</strong>');
+  var definitions_ol = $("<ol>");
+  for(var i=0; i<definitions.length; i++){
+    definitions_ol.append("<li>"+definitions[i].file+":"+definitions[i].line.toString()+"</li>");
+  }
+  content.append(definitions_ol);
+
+  if( dependents.length > 0 ){
+    content.append('<strong>Dependents:</strong>');
+    var dependents_ol = $("<ol>");
+    for(var i=0; i<dependents.length; i++){
+      dependents_ol.append("<li>"+dependents[i].source.id+"</li>");
+    }
+    content.append(dependents_ol);
+  }
+
+  if( dependencies.length > 0 ){
+    content.append('<strong>Dependencies:</strong>');
+    var dependencies_ol = $("<ol>");
+    for(var i=0; i<dependencies.length; i++){
+      dependencies_ol.append("<li>"+dependencies[i].target.id+"</li>");
+    }
+    content.append(dependencies_ol);
+  }
+
+  $('#information_panel').html(content);
+  return true;
+});
+
+
+// --------------------------------
+// Search Panel
+// --------------------------------
+$(document).on('change', '#highlight_by_namespace', function(){
+  var highlights_entries = $(this).val().trim();
+  var highlights = _(highlights_entries.split("\n"));
+
+  rubrowser.node.classed('highlighted_by_namespace', function(d){
+    if(highlights_entries.length == 0){ return false; }
+    return highlights.some(function(i){ return d.id.indexOf(i) > -1; });
+  });
+});
+
+$(document).on('change', '#highlight_by_file_path', function(){
+  var highlights_entries = $(this).val().trim();
+  var highlights = _(highlights_entries.split("\n"));
+
+  rubrowser.node.classed('highlighted_by_path', function(d){
+    if(highlights_entries.length == 0){ return false; }
+    return highlights.some(function(i){
+      return _(d.files).some(function(f) {
+        return f.indexOf(i) > -1;
+      });
+    });
+  });
+});
+
+$(document).on('change', '#highlight_modules, #highlight_classes', function(){
+  var modules_highlighted = $('#highlight_modules').is(':checked'),
+      classes_highlighted = $('#highlight_classes').is(':checked');
+
+  rubrowser.node.classed('highlighted_by_type', function(d){
+    return (d.type == 'Module' && modules_highlighted) || (d.type == 'Class' && classes_highlighted);
+  });
+});
+
+// --------------------------------
+// Ignore Panel
+// --------------------------------
+var ignoring_functions = {};
+
+function updateNodes() {
+
+  function ignoreNode(d) {
+    return _(ignoring_functions).some(function(ignoring_function) {
+      return ignoring_function(d);
+    });
+  }
+
+  function notIgnoreNode(d){
+    return !ignoreNode(d);
+  }
+  function ignoreRelation(r){
+    return ignoreNode(r.source) || ignoreNode(r.target);
+  }
+
+  function notIgnoreRelation(r){
+    return !ignoreRelation(r);
+  }
+
+  var filtered_definitions = rubrowser.definitions.filter(notIgnoreNode);
+  rubrowser.simulation.nodes(filtered_definitions);
+  rubrowser.node.classed('ignored', ignoreNode);
+
+  var filtered_relations = rubrowser.relations.filter(notIgnoreRelation);
+  rubrowser.simulation.force("link").links(filtered_relations);
+  rubrowser.link.classed('ignored', ignoreRelation);
+}
+
+$(document).on('change', '#ignore_by_namespace', function(){
+  var ignores_entries = $(this).val().trim();
+  var ignores = ignores_entries.split("\n");
+
+  if(ignores_entries.length == 0){
+    delete ignoring_functions["ignore_by_name"];
+  }else{
+    ignoring_functions["ignore_by_name"] = function(d){
+      return ignores.some(function(i){ return d.id.indexOf(i) > -1; });
+    }
+  }
+
+  updateNodes();
+});
+
+$(document).on('change', '#ignore_by_file_path', function(){
+  var ignores_entries = $(this).val().trim();
+  var ignores = ignores_entries.split("\n");
+
+  if(ignores_entries.length == 0){
+    delete ignoring_functions["ignore_by_file_path"];
+  }else{
+    ignoring_functions["ignore_by_file_path"] = function(d){
+      return ignores.some(function(i){
+        return _(d.files).every(function(f){
+          return f.indexOf(i) > -1;
+        });
+      });
+    }
+  }
+
+  updateNodes();
+});
+
+$(document).on('change', '#ignore_modules, #ignore_classes', function(){
+  var modules_ignored = $('#ignore_modules').is(':checked'),
+      classes_ignored = $('#ignore_classes').is(':checked');
+
+  if( modules_ignored ){
+    ignoring_functions["ignore_modules"] = function(d) {
+      return d.type == 'Module';
+    }
+  }else{
+    delete ignoring_functions["ignore_modules"];
+  }
+
+  if( classes_ignored ){
+    ignoring_functions["ignore_classes"] = function(d) {
+      return d.type == 'Class';
+    }
+  }else{
+    delete ignoring_functions["ignore_classes"];
+  }
+
+  updateNodes();
+});
+
+// --------------------------------
+// Display Panel
+// --------------------------------
+$(document).on('change', "#force_collide", function(){
+  var new_value = $(this).val();
+  rubrowser.simulation.force("forceCollide", d3.forceCollide(new_value));
+});
+
+$(document).on('change', "#hide_relations", function(){
+  var hide_relations = $('#hide_relations').is(':checked');
+  rubrowser.link.classed("hide_relation", hide_relations);
+});
+
+$(document).on('change', "#hide_namespaces", function(){
+  var hide_namespaces = $('#hide_namespaces').is(':checked');
+  rubrowser.node.classed("hide_namespace", hide_namespaces);
+});
+
+$(document).on('click', "#pause_simulation", function(){
+    rubrowser.simulation.stop();
+});
+
+$(document).on('click', "#fix_all", function(){
+  rubrowser.node.classed("fixed", true);
+  rubrowser.node.each(function(d){
+    d.fx = d.x;
+    d.fy = d.y;
+  });
+});
+
+$(document).on('click', "#release_all", function(){
+  rubrowser.node.classed("fixed", false);
+  rubrowser.node.each(function(d){
+    delete d["fx"];
+    delete d["fy"];
+  });
+});
+
+$(document).on('click', "#download_layout", function(){
+  var json = JSON.stringify(rubrowser.state.get());
+  var element = document.createElement('a');
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(json));
+  element.setAttribute('download', 'layout.json');
+
+  element.style.display = 'none';
+  document.body.appendChild(element);
+  element.click();
+  document.body.removeChild(element);
+});
+</script>
+    
+
+    
+  </body>
+</html>
