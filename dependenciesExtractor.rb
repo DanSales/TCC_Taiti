@@ -7,13 +7,14 @@ require 'fileutils'
 class DependenciesExtractor
 
   def preprocess(target_project)
+    dependencies_path = Dir.pwd + '/TestInterfaceEvaluation/dependencies.json' 
     Dir.chdir(target_project){
-      `rubrowser -j > "D:/Faculdade 2020.4/TCC/TestInterfaceEvaluationWithDeps/TestInterfaceEvaluation/dependencies.json"`
+      `rubrowser -j > "#{dependencies_path}"`
     }
   end
-
+"""
   def process()
-    extract("D:/Faculdade 2020.4/TCC/TestInterfaceEvaluationWithDeps/output.html")
+    extract('D:/Faculdade 2020.4/TCC/TestInterfaceEvaluationWithDeps/output.html')
     hashJ = JSON.parse(read_file('D:/Faculdade 2020.4/TCC/TestInterfaceEvaluationWithDeps/TestInterfaceEvaluation/dependencies.json'))
     hashJ = handle_missing_names(hashJ)
     write_file(hashJ.to_json, 'D:/Faculdade 2020.4/TCC/TestInterfaceEvaluationWithDeps/TestInterfaceEvaluation/dependencies.json')
@@ -25,7 +26,7 @@ class DependenciesExtractor
     json_data = json_regex.match(file_content)[1]
     write_file(json_data, 'D:/Faculdade 2020.4/TCC/TestInterfaceEvaluationWithDeps/TestInterfaceEvaluation/dependencies.json')
   end
-
+"""
   def find_all_relations(file_paths)
     response = ''
     file_path_arr = file_paths.split(",")
@@ -55,7 +56,8 @@ class DependenciesExtractor
   end
 
   def find_relations(file_path)
-    json = JSON.parse(read_file('D:/Faculdade 2020.4/TCC/TestInterfaceEvaluationWithDeps/TestInterfaceEvaluation/dependencies.json'))
+    dependencies_path = Dir.pwd + '/TestInterfaceEvaluation/dependencies.json'
+    json = JSON.parse(read_file(dependencies_path))
     dep = Hash.new
     json["relations"].each do |dependency|
       if dependency["file"].gsub(/\\|\//, '').downcase == file_path.gsub(/\\|\//, '').downcase
@@ -66,7 +68,8 @@ class DependenciesExtractor
   end
 
   def find_definition(search_param, attribute)
-    json = JSON.parse(read_file('D:/Faculdade 2020.4/TCC/TestInterfaceEvaluationWithDeps/TestInterfaceEvaluation/dependencies.json'))
+    dependencies_path = Dir.pwd + '/TestInterfaceEvaluation/dependencies.json'
+    json = JSON.parse(read_file(dependencies_path))
     dep = Hash.new
     json["definitions"].each do |definition|
       if definition[attribute].gsub(/\\|\//.to_s, '').downcase == search_param.gsub(/\\|\//.to_s, '').downcase
