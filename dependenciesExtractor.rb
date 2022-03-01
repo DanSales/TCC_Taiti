@@ -47,7 +47,12 @@ class DependenciesExtractor
       relations_arr.each do |relation|
         path = find_definition(relation['namespace'], "namespace")
         if path != 'Not found'
-          response += path[relation['namespace'].downcase][0]['file'] + ','
+          actual_path = Dir.pwd + 'TestInterfaceEvaluation/spg_repos/'
+          k = actual_path.length + 1
+          while(path[relation['namespace'].downcase][0]['file'][k] != '/')
+            k += 1
+          end
+          response += path[relation['namespace'].downcase][0]['file'][k+1..-1] + ','
         end
       end
     end
@@ -147,7 +152,11 @@ def add_home_path(home_path, testi)
     while(testi_new[k][i] == ' ')
       i += 1
     end
-    fix_path = testi_new[k][i..-1]
+    j = testi_new[k].length - 1
+    while(testi_new[k][j] == ' ')
+      j -= 1
+    end
+    fix_path = testi_new[k][i..j]
     string_aux = home_path + fix_path
     if(k != testi_new.length - 1)
       final_string = final_string + string_aux + ','
@@ -158,12 +167,55 @@ def add_home_path(home_path, testi)
   return final_string
 end
 
+def clean_string(testi)
+  correct_string = testi[1..-2]
+  testi_new = correct_string.split(',')
+  final_string = ''
+  string_aux = ''
+  testi_new.length.times do |k|
+    i = 0
+    while(testi_new[k][i] == ' ')
+      i += 1
+    end
+    j = testi_new[k].length - 1
+    while(testi_new[k][j] == ' ')
+      j -= 1
+    end
+    fix_path = testi_new[k][i..j]
+    string_aux = fix_path
+    if(k != testi_new.length - 1)
+      final_string = final_string + string_aux + ','
+    else
+      final_string = final_string + string_aux
+    end
+  end
+  return final_string
+end
+
+def calc_metrics(taski, testi)
+  list_testi = testi.split(',')
+  list_taski = taski.split(',')
+  intersessao = 0
+  list_testi.length.times do |k|
+    if(list_taski.include?(list_testi[k]))
+      intersessao += 1
+    end
+  end
+  precision = intersessao.to_f / list_testi.length
+  recall = intersessao.to_f / list_taski.length
+  f2 = 0
+  if (precision + recall) != 0
+    f2 = (2 * precision * recall).to_f / (precision + recall)
+  end
+  return [precision.round(2), recall.round(2), f2.round(2)]
+end
+
 def main(taiti_result, task_csv)
   table_taiti = CSV.parse(File.read(taiti_result), headers: true)
   table_task = CSV.parse(File.read(task_csv), headers: true)
   #TODO Checar se arquivo existe, caso exista limpar ele antes de escrever para não pegar lixo junto
   CSV.open("testidep.csv", "wb") do |csv|
-    csv << (table_taiti.headers + [ 'TestIDep' ])
+    csv << (table_taiti.headers + [ 'TestIDep', 'PrecisionI', 'RecallI', 'F2I', 'PrecisionDep', 'RecallDep','F2Dep' ])
     table_taiti.each.with_index do |row, i|
       name = table_taiti[i]['Project'].split('/')[-1]
       puts('Executing Code to Get All Dependencies of Repo:' + name)
@@ -177,13 +229,25 @@ def main(taiti_result, task_csv)
       #puts(git.show())
       current_path = Dir.pwd + '/'+dir + '/'
       testi = add_home_path(current_path, table_taiti[i]['TestI'])
-      #puts(testi)
-      resultado = DependenciesExtractor.new.get_all_dependencies(current_path, testi)
-      csv << (row.fields + [ resultado ])
+      testi_string = table_taiti[i]['TestI'][1..-2]
+      resultado = '[' + table_taiti[i]['TestI'][1..-2] + ','+DependenciesExtractor.new.get_all_dependencies(current_path, testi) + ']'
+      cleaned_testi = clean_string(table_taiti[i]['TestI'])
+      cleaned_testdep = clean_string(resultado)
+      cleaned_changed = clean_string(table_taiti[i]['Changed files'])
+      metrics_testi = calc_metrics(cleaned_changed, cleaned_testi)
+      precisioni = metrics_testi[0]
+      recalli = metrics_testi[1]
+      f2i = metrics_testi[2]
+      metrics_testdep = calc_metrics(cleaned_changed, cleaned_testdep)
+      precisiondep = metrics_testdep[0]
+      recalldep = metrics_testdep[1]
+      f2dep = metrics_testdep[2]
+      csv << (row.fields + [ resultado, precisioni, recalli, f2i, precisiondep, recalldep, f2dep ])
     end
   end
 end
 
+#add_home_path(Dir.pwd, '[app/controllers/mentor_teacher/schedules_controller.rb, app/controllers/user_sessions_controller.rb, app/helpers/mentor_teacher/schedules_helper.rb, app/models/timeslot.rb, app/models/user_session.rb, app/views/mentor_teacher/schedules/_form.html.haml, app/views/mentor_teacher/schedules/new.html.haml, app/views/user_sessions/new.html.haml, app/views/user_sessions/shared/_error_messages.html.erb  ]')
 main('taiti_result.csv', 'tasks_taiti.csv')
 #DependenciesExtractor.new.get_all_dependencies('D:/Faculdade 2020.4/TCC/TestInterfaceEvaluationWithDeps/TestInterfaceEvaluation/spg_repos/diaspora', 'D:/Faculdade 2020.4/TCC/TestInterfaceEvaluationWithDeps/TestInterfaceEvaluation/spg_repos/diaspora/app/controllers/streams_controller.rb')
 #DependenciesExtractor.new.extract("D:/Faculdade 2020.4/TCC/TestInterfaceEvaluationWithDeps/output.html")
