@@ -1,6 +1,5 @@
 *.gem
 *.rbc
 /tmp/
-/spg_repos
 testidep.csv
 # .env
