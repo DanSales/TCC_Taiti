@@ -205,7 +205,7 @@ def calc_metrics(taski, testi)
   recall = intersessao.to_f / list_taski.length
   f2 = 0
   if (precision + recall) != 0
-    f2 = (2 * precision * recall).to_f / (precision + recall)
+    f2 = (5 * precision * recall).to_f / ((4 * precision) + recall)
   end
   return [precision.round(2), recall.round(2), f2.round(2)]
 end
@@ -247,8 +247,9 @@ def main(taiti_result, task_csv)
   end
 end
 
+main(ARGV[0], ARGV[1])
 #add_home_path(Dir.pwd, '[app/controllers/mentor_teacher/schedules_controller.rb, app/controllers/user_sessions_controller.rb, app/helpers/mentor_teacher/schedules_helper.rb, app/models/timeslot.rb, app/models/user_session.rb, app/views/mentor_teacher/schedules/_form.html.haml, app/views/mentor_teacher/schedules/new.html.haml, app/views/user_sessions/new.html.haml, app/views/user_sessions/shared/_error_messages.html.erb  ]')
-main('taiti_result.csv', 'tasks_taiti.csv')
+#main('taiti_result.csv', 'tasks_taiti.csv')
 #DependenciesExtractor.new.get_all_dependencies('D:/Faculdade 2020.4/TCC/TestInterfaceEvaluationWithDeps/TestInterfaceEvaluation/spg_repos/diaspora', 'D:/Faculdade 2020.4/TCC/TestInterfaceEvaluationWithDeps/TestInterfaceEvaluation/spg_repos/diaspora/app/controllers/streams_controller.rb')
 #DependenciesExtractor.new.extract("D:/Faculdade 2020.4/TCC/TestInterfaceEvaluationWithDeps/output.html")
 #DependenciesExtractor.new.find_formated_relations('D:\Faculdade 2020.4\TCC\TestInterfaceEvaluationWithDeps\TestInterfaceEvaluation\spg_repos\diaspora\app\models\user.rb')
