@@ -14,6 +14,6 @@ Basta alterar a linha 251 do código que possui a chamada para o método main ap
 main('taiti_result.csv', 'tasks_taiti.csv')
 Para
 main(caminhocsvsaidataiti, caminhocsvtaskstaiti)
-Obs: Caso os arquivos estejam na root, não é necessário o caminho completo apenas o nome do arquivo + extensão
+Obs: Caso os arquivos estejam na root, não é necessário o caminho completo apenas o nome do arquivo
 ```
 
