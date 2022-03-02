@@ -10,10 +10,13 @@ Exemplo dos arquivos está na root do repositório: taiti_result.csv(Saída de T
 
 ### 🎲 Rodando o Codigo
 ```bash
-Basta alterar a linha 251 do código que possui a chamada para o método main apenas alterando:
-main('taiti_result.csv', 'tasks_taiti.csv')
-Para
-main(caminhocsvsaidataiti, caminhocsvtaskstaiti)
-Obs: Caso os arquivos estejam na root, não é necessário o caminho completo apenas o nome do arquivo
+Basta executar o script ruby passando os nomes dos arquivos csv, deve ser executado na root do projeto.
+
+O csv com resultado de TAITI primeiro e depois o csv com o as hashes de commit.
+Exemplo: 
+ruby dependenciesExtractor.rb taiti_result.csv tasks_taiti.csv
+
+O exemplo foi feito em windows, caso a máquina seja linux executar:
+./dependenciesExtractor.rb taiti_result.csv tasks_taiti.csv
 ```
 
