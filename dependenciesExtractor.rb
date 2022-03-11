@@ -7,26 +7,34 @@ require 'fileutils'
 class DependenciesExtractor
 
   def preprocess(target_project)
-    dependencies_path = Dir.pwd + '/TestInterfaceEvaluation/dependencies.json' 
+    output_path = Dir.pwd + '/TestInterfaceEvaluation/output.html' 
     Dir.chdir(target_project){
-      `rubrowser -j > "#{dependencies_path}"`
+      `rubrowser > "#{output_path}"`
     }
   end
-"""
+
   def process()
-    extract('D:/Faculdade 2020.4/TCC/TestInterfaceEvaluationWithDeps/output.html')
-    hashJ = JSON.parse(read_file('D:/Faculdade 2020.4/TCC/TestInterfaceEvaluationWithDeps/TestInterfaceEvaluation/dependencies.json'))
-    hashJ = handle_missing_names(hashJ)
-    write_file(hashJ.to_json, 'D:/Faculdade 2020.4/TCC/TestInterfaceEvaluationWithDeps/TestInterfaceEvaluation/dependencies.json')
+    output_path = Dir.pwd + '/TestInterfaceEvaluation/output.html'
+    dependencies_path = Dir.pwd + '/TestInterfaceEvaluation/dependencies.json'
+    extract(output_path)
+    if !File.zero?(dependencies_path)
+      hashJ = JSON.parse(read_file(dependencies_path))
+      write_file(hashJ.to_json, dependencies_path)
+    end
+    #hashJ = handle_missing_names(hashJ)
   end
 
   def extract(output_path)
     file_content = read_file(output_path)
+    dependencies_path = Dir.pwd + '/TestInterfaceEvaluation/dependencies.json'
     json_regex = /var data = (.*);/
-    json_data = json_regex.match(file_content)[1]
-    write_file(json_data, 'D:/Faculdade 2020.4/TCC/TestInterfaceEvaluationWithDeps/TestInterfaceEvaluation/dependencies.json')
+    json_data = ""
+    if !json_regex.match(file_content).nil?
+      json_data = json_regex.match(file_content)[1]
+    end
+    write_file(json_data, dependencies_path)
   end
-"""
+
   def find_all_relations(file_paths)
     response = ''
     file_path_arr = file_paths.split(",")
@@ -43,7 +51,9 @@ class DependenciesExtractor
     relations = find_relations(file_path)
     response = ''
     if relations != 'Not found'
-      relations_arr = relations[file_path.gsub(/\\/, '/')].uniq { |t| t['namespace'] }
+      if !file_path.nil?
+        relations_arr = relations[file_path.gsub(/\\/.to_s, '/'.to_s)].uniq { |t| t['namespace'] }
+      end
       relations_arr.each do |relation|
         path = find_definition(relation['namespace'], "namespace")
         if path != 'Not found'
@@ -65,8 +75,10 @@ class DependenciesExtractor
     json = JSON.parse(read_file(dependencies_path))
     dep = Hash.new
     json["relations"].each do |dependency|
-      if dependency["file"].gsub(/\\|\//, '').downcase == file_path.gsub(/\\|\//, '').downcase
-        dep["#{dependency["file"]}"] ? dep["#{dependency["file"]}"].push(dependency) : dep["#{dependency["file"]}"] = [dependency]
+      if !dependency["file"].nil? && !file_path.nil?
+        if dependency["file"].gsub(/\\|\//.to_s, ''.to_s).downcase == file_path.gsub(/\\|\//.to_s, ''.to_s).downcase
+          dep["#{dependency["file"]}"] ? dep["#{dependency["file"]}"].push(dependency) : dep["#{dependency["file"]}"] = [dependency]
+        end
       end
     end
     dep.empty? ? 'Not found' : dep
@@ -77,8 +89,10 @@ class DependenciesExtractor
     json = JSON.parse(read_file(dependencies_path))
     dep = Hash.new
     json["definitions"].each do |definition|
-      if definition[attribute].gsub(/\\|\//.to_s, '').downcase == search_param.gsub(/\\|\//.to_s, '').downcase
-        dep["#{definition[attribute]}"] ? dep["#{definition[attribute]}"].push(definition) : dep["#{definition[attribute]}".downcase] = [definition]
+      if !definition[attribute].nil? && !search_param.nil?
+        if definition[attribute].gsub(/\\|\//.to_s, ''.to_s).to_s.downcase == search_param.gsub(/\\|\//.to_s, ''.to_s).to_s.downcase
+          dep["#{definition[attribute]}"] ? dep["#{definition[attribute]}"].push(definition) : dep["#{definition[attribute]}".downcase] = [definition]
+        end
       end
     end
     dep.empty? ? 'Not found' : dep
@@ -138,7 +152,13 @@ class DependenciesExtractor
 
   def get_all_dependencies(project_path, file_paths)
     preprocess(project_path)
-    return find_all_relations(file_paths)
+    process()
+    dependencies_path = Dir.pwd + '/TestInterfaceEvaluation/dependencies.json'
+    if !File.zero?(dependencies_path)
+      return find_all_relations(file_paths)
+    else
+      return ""
+    end
   end
 end
 
@@ -224,13 +244,21 @@ def main(taiti_result, task_csv)
         git = Git.open(dir)
       else
         git = Git.clone(table_taiti[i]['Project'], name, path: 'TestInterfaceEvaluation/spg_repos')
+        #Needed for git windows, some cases may cause bug for checkout
+        git.config('core.protectNTFS', 'false')
       end
+      #puts(git.show())
       git.checkout(table_task[i]['LAST'])
       #puts(git.show())
       current_path = Dir.pwd + '/'+dir + '/'
       testi = add_home_path(current_path, table_taiti[i]['TestI'])
       testi_string = table_taiti[i]['TestI'][1..-2]
-      resultado = '[' + table_taiti[i]['TestI'][1..-2] + ','+DependenciesExtractor.new.get_all_dependencies(current_path, testi) + ']'
+      all_dependencies = DependenciesExtractor.new.get_all_dependencies(current_path, testi)
+      if all_dependencies != ""
+        resultado = '[' + table_taiti[i]['TestI'][1..-2] + ','+all_dependencies + ']'
+      else
+        resultado = '[' + table_taiti[i]['TestI'][1..-2] + ']'
+      end
       cleaned_testi = clean_string(table_taiti[i]['TestI'])
       cleaned_testdep = clean_string(resultado)
       cleaned_changed = clean_string(table_taiti[i]['Changed files'])
