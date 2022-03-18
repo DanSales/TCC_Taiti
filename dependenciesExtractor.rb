@@ -4,6 +4,9 @@ require 'json'
 require 'csv'
 require 'git'
 require 'fileutils'
+require 'logger'
+
+$log = Logger.new('logs.log')
 class DependenciesExtractor
 
   def preprocess(target_project)
@@ -238,7 +241,7 @@ def main(taiti_result, task_csv)
     csv << (table_taiti.headers + [ 'TestIDep', 'PrecisionI', 'RecallI', 'F2I', 'PrecisionDep', 'RecallDep','F2Dep' ])
     table_taiti.each.with_index do |row, i|
       name = table_taiti[i]['Project'].split('/')[-1]
-      puts('Executing Code to Get All Dependencies of Repo:' + name)
+      $log.debug{'Executing Code to Get All Dependencies of Repo:' + name}
       dir = 'TestInterfaceEvaluation/spg_repos/' + name
       if(Dir.exists?(dir))
         git = Git.open(dir)
@@ -257,6 +260,7 @@ def main(taiti_result, task_csv)
       if all_dependencies != ""
         resultado = '[' + table_taiti[i]['TestI'][1..-2] + ','+all_dependencies + ']'
       else
+        $log.warn "Não foi possível criar TestIDep, Rubrowser Falhou!"
         resultado = '[' + table_taiti[i]['TestI'][1..-2] + ']'
       end
       cleaned_testi = clean_string(table_taiti[i]['TestI'])
