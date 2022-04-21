@@ -1,5 +1,3 @@
-#Run methods with ruby -r "D:/Faculdade 2020.4/TCC/TestInterfaceEvaluationWithDeps/dependenciesExtractor.rb" -e "DependenciesExtractor.new.find_all_relations 'D:/Faculdade 2020.4/TCC/TestInterfaceEvaluationWithDeps/tracks/app/controllers/application_controller.rb,D:/Faculdade 2020.4/TCC/TestInterfaceEvaluationWithDeps/tracks/lib/login_system.rb'"
-
 require 'json'
 require 'csv'
 require 'git'
@@ -158,6 +156,7 @@ class DependenciesExtractor
     process()
     dependencies_path = Dir.pwd + '/TestInterfaceEvaluation/dependencies.json'
     if !File.zero?(dependencies_path)
+      $log.debug{'Dependencies path nao esta vazio!'}
       return find_all_relations(file_paths)
     else
       return ""
@@ -240,13 +239,13 @@ def main(taiti_result, task_csv)
   CSV.open("testidep.csv", "wb") do |csv|
     csv << (table_taiti.headers + [ 'TestIDep', 'PrecisionI', 'RecallI', 'F2I', 'PrecisionDep', 'RecallDep','F2Dep' ])
     table_taiti.each.with_index do |row, i|
-      name = table_taiti[i]['Project'].split('/')[-1]
+      name = table_task[i]['REPO_URL'].split('/')[-1][0..-5]
       $log.debug{'Executing Code to Get All Dependencies of Repo:' + name}
       dir = 'TestInterfaceEvaluation/spg_repos/' + name
       if(Dir.exists?(dir))
         git = Git.open(dir)
       else
-        git = Git.clone(table_taiti[i]['Project'], name, path: 'TestInterfaceEvaluation/spg_repos')
+        git = Git.clone(table_task[i]['REPO_URL'], name, path: 'TestInterfaceEvaluation/spg_repos')
         #Needed for git windows, some cases may cause bug for checkout
         git.config('core.protectNTFS', 'false')
       end
@@ -260,7 +259,7 @@ def main(taiti_result, task_csv)
       if all_dependencies != ""
         resultado = '[' + table_taiti[i]['TestI'][1..-2] + ','+all_dependencies + ']'
       else
-        $log.warn "Não foi possível criar TestIDep, Rubrowser Falhou!"
+        $log.warn "Todas as Dependencias vazias ID: " + table_taiti[i]['Task']
         resultado = '[' + table_taiti[i]['TestI'][1..-2] + ']'
       end
       cleaned_testi = clean_string(table_taiti[i]['TestI'])
@@ -280,12 +279,3 @@ def main(taiti_result, task_csv)
 end
 
 main(ARGV[0], ARGV[1])
-#add_home_path(Dir.pwd, '[app/controllers/mentor_teacher/schedules_controller.rb, app/controllers/user_sessions_controller.rb, app/helpers/mentor_teacher/schedules_helper.rb, app/models/timeslot.rb, app/models/user_session.rb, app/views/mentor_teacher/schedules/_form.html.haml, app/views/mentor_teacher/schedules/new.html.haml, app/views/user_sessions/new.html.haml, app/views/user_sessions/shared/_error_messages.html.erb  ]')
-#main('taiti_result.csv', 'tasks_taiti.csv')
-#DependenciesExtractor.new.get_all_dependencies('D:/Faculdade 2020.4/TCC/TestInterfaceEvaluationWithDeps/TestInterfaceEvaluation/spg_repos/diaspora', 'D:/Faculdade 2020.4/TCC/TestInterfaceEvaluationWithDeps/TestInterfaceEvaluation/spg_repos/diaspora/app/controllers/streams_controller.rb')
-#DependenciesExtractor.new.extract("D:/Faculdade 2020.4/TCC/TestInterfaceEvaluationWithDeps/output.html")
-#DependenciesExtractor.new.find_formated_relations('D:\Faculdade 2020.4\TCC\TestInterfaceEvaluationWithDeps\TestInterfaceEvaluation\spg_repos\diaspora\app\models\user.rb')
-#DependenciesExtractor.new.find_all_relations('D:/Faculdade 2020.4/TCC/TestInterfaceEvaluationWithDeps/TestInterfaceEvaluation/spg_repos/diaspora/app/controllers/home_controller.rb')
-#DependenciesExtractor.new.find_definition('D:\Faculdade 2020.4\TCC\TestInterfaceEvaluationWithDeps\TestInterfaceEvaluation\spg_repos\TheOdinProject_theodinproject\app\models\user.rb', "file")
-#DependenciesExtractor.new.process()
-#DependenciesExtractor.new.preprocess('D:/Faculdade 2020.4/TCC/TestInterfaceEvaluationWithDeps/TestInterfaceEvaluation/spg_repos/diaspora')
