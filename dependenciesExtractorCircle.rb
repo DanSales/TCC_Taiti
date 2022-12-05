@@ -3,8 +3,6 @@ require 'csv'
 require 'git'
 require 'fileutils'
 require 'logger'
-require 'parser/current'
-require './processor'
 
 $log = Logger.new('logs.log')
 class DependenciesExtractor
@@ -24,7 +22,7 @@ class DependenciesExtractor
       hashJ = JSON.parse(read_file(dependencies_path))
       write_file(hashJ.to_json, dependencies_path)
     end
-    hashJ = handle_missing_names(hashJ)
+    #hashJ = handle_missing_names(hashJ)
   end
 
   def extract(output_path)
@@ -40,30 +38,36 @@ class DependenciesExtractor
 
   def find_all_relations(file_paths)
     response = ''
+    response_circular = ''
     file_path_arr = file_paths.split(",")
     file_path_arr.each do |file_path|
       dependency_def = find_definition(file_path, "file")
       if dependency_def != 'Not found'
-        response += find_formated_relations(file_path)
+        strings = find_formated_relations(file_path)
+        response += strings[0]
+        response_circular += strings[1]
       end
     end
-    return (response[0..-2]).split(',').uniq.join(",")
+    return [(response[0..-2]).split(',').uniq.join(","), (response_circular[0..-2]).split(',').join(",")]
   end
 
   def new_find_all_relations(file_paths)
     response = ''
     file_path_arr = file_paths.split(",")
+    $log.debug{file_path_arr}
     file_path_arr.each do |file_path|
       dependency_def = find_definition(file_path, "file")
       if dependency_def != 'Not found'
-        response += find_formated_relations(file_path)
+        $log.debug{dependency_def}
+        #response += find_formated_relations(file_path)
       end
     end
-    return (response[0..-2]).split(',').uniq.join(",")
+    #return (response[0..-2]).split(',').uniq.join(",")
   end
 
   def find_formated_relations(file_path)
     relations = find_relations(file_path)
+    response_circular = ''
     response = ''
     if relations != 'Not found'
       if !file_path.nil?
@@ -76,13 +80,18 @@ class DependenciesExtractor
           k = actual_path.length + 1
           while(path[relation['namespace'].downcase][0]['file'][k] != '/')
             k += 1
-          end
+          end 
           response += path[relation['namespace'].downcase][0]['file'][k+1..-1] + ','
+          if(path[relation['namespace'].downcase][0]['circular'])
+            response_circular += 'true' + ','
+          else
+            response_circular += 'false' + ','
+          end
         end
       end
     end
     #Return comes with extra ',' take care
-    response
+    return [response, response_circular]
   end
 
   def find_relations(file_path)
@@ -113,42 +122,42 @@ class DependenciesExtractor
     dep.empty? ? 'Not found' : dep
   end
 # TODO: Catch more names correctly 
-  def find_missing_name(path, target_line, ast)
-    prob_name = ''
-    if !ast.class_list.empty?
-      ast.class_list.each do |chave, par|
-        par.each do |elemento|
-          if elemento[:line].to_s.match?(target_line.to_s)
-            prob_name = elemento[:name]
-          end
-        end
-      end
+  def find_missing_name(path, target_line)
+    name_regex0 = /^([A-Z][^.]+)/
+    name_regex1 = / +:*([A-Z][^(.|,| )]+)/
+    name_regex2 = /\(([A-Z].*?)(\)|\.|\,)/
+    name_regex3 = /(\{:*([A-Z].*?[^.]+?)\})/
+    colon_regex = /::/
+    lines = File.readlines(path)
+    target_line_value = lines[target_line - 1]
+    if(name_regex0.match?(target_line_value))
+      prob_name = name_regex0.match(target_line_value)[1]
+    elsif(name_regex2.match?(target_line_value))
+      prob_name = name_regex2.match(target_line_value)[1]
+    elsif(name_regex3.match?(target_line_value))
+      prob_name = name_regex3.match(target_line_value)[2]
+      prob_name = name_regex0.match?(prob_name) ? name_regex0.match(prob_name)[1] : prob_name 
+    elsif(name_regex1.match?(target_line_value))
+      prob_name = name_regex1.match(target_line_value)[1]
     end
-    if !ast.send_list.empty?
-      ast.send_list.each do |chave, par|
-        par.each do |elemento|
-          if elemento[:line].to_s.match?(target_line.to_s)
-            prob_name = elemento[:name]
-          end
-        end
-      end
+
+    if(!prob_name.nil?)
+      prob_name = prob_name[-1] == '.' ? prob_name.chop : prob_name
+    end
+
+    while(colon_regex.match?(prob_name))
+      prob_name = /::.*?([^.]+)/.match(prob_name)[1]
     end
     find_definition(prob_name, "namespace") != 'Not found' ? find_definition(prob_name, "namespace") : ''
-  rescue Parser::SyntaxError
-    $log.debug{'Erro Parser Syntax!'}
   end
 
   def handle_missing_names(json)
     bugged = 0
     total = 0
-    code = File.read(path)
-    parsed_code = Parser::CurrentRuby.parse(code)
-    ast = Processor.new
-    ast.process(parsed_code)
     json["relations"].each_with_index do |dependency, idx|
       total += 1
       if dependency["caller"].empty? && !dependency["file"].empty? && dependency["line"]
-        json["relations"][idx]["caller"] = find_missing_name(json["relations"][idx]["file"], json["relations"][idx]["line"], ast)
+        json["relations"][idx]["caller"] = find_missing_name(json["relations"][idx]["file"], json["relations"][idx]["line"])
         bugged += 1
       end
     end
@@ -262,8 +271,8 @@ def main(taiti_result, task_csv)
   table_taiti = CSV.parse(File.read(taiti_result), headers: true)
   table_task = CSV.parse(File.read(task_csv), headers: true)
   #TODO Checar se arquivo existe, caso exista limpar ele antes de escrever para não pegar lixo junto
-  CSV.open("testidep.csv", "wb") do |csv|
-    csv << (table_taiti.headers + [ 'TestIDep', 'PrecisionI', 'RecallI', 'F2I', 'PrecisionDep', 'RecallDep','F2Dep' ])
+  CSV.open("testidepcircle.csv", "wb") do |csv|
+    csv << (table_taiti.headers + [ 'TestIDep', 'Circular'])
     table_taiti.each.with_index do |row, i|
       name = table_task[i]['REPO_URL'].split('/')[-1][0..-5]
       $log.debug{'Executing Code to Get All Dependencies of Repo:' + name}
@@ -283,23 +292,14 @@ def main(taiti_result, task_csv)
       testi_string = table_taiti[i]['TestI'][1..-2]
       all_dependencies = DependenciesExtractor.new.get_all_dependencies(current_path, testi)
       if all_dependencies != ""
-        resultado = '[' + table_taiti[i]['TestI'][1..-2] + ','+all_dependencies + ']'
+        dependencies_testi = all_dependencies[0]
+        resultado = '[' + dependencies_testi + ']'
+        circular_testi = all_dependencies[1]
+        resultado_circular = '[' + circular_testi + ']'
+        csv << (row.fields + [resultado, resultado_circular])
       else
-        $log.warn "Todas as Dependencias vazias ID: " + table_taiti[i]['Task']
-        resultado = '[' + table_taiti[i]['TestI'][1..-2] + ']'
+        csv << (row.fields + ['[FAIL]', '[FAIL]'])
       end
-      cleaned_testi = clean_string(table_taiti[i]['TestI'])
-      cleaned_testdep = clean_string(resultado)
-      cleaned_changed = clean_string(table_taiti[i]['Changed files'])
-      metrics_testi = calc_metrics(cleaned_changed, cleaned_testi)
-      precisioni = metrics_testi[0]
-      recalli = metrics_testi[1]
-      f2i = metrics_testi[2]
-      metrics_testdep = calc_metrics(cleaned_changed, cleaned_testdep)
-      precisiondep = metrics_testdep[0]
-      recalldep = metrics_testdep[1]
-      f2dep = metrics_testdep[2]
-      csv << (row.fields + [ resultado, precisioni, recalli, f2i, precisiondep, recalldep, f2dep ])
     end
   end
 end
