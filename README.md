@@ -18,5 +18,12 @@ ruby dependenciesExtractor.rb taiti_result.csv tasks_taiti.csv
 
 O exemplo foi feito em windows, caso a máquina seja linux executar:
 ./dependenciesExtractor.rb taiti_result.csv tasks_taiti.csv
+
+Para executar os arquivos cujos resultados foram apresentados no texto do TCC basta executar os arquivos na root do projeto do github:
+No exemplo com 950 tarefas
+./dependenciesExtractor.rb taiti_result950.csv tasks_950.csv
+No exemplo com 437 tarefas
+./dependenciesExtractor.rb taiti_result437.csv tasks_437.csv
+
 ```
 
